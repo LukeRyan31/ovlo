@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F5F0E8;
+  font-family: 'DM Sans', sans-serif;
+  color: #1A1714;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: #C4763A;
+  color: #FDFBF7;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5F0E8;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C4763A;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A35F28;
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(72px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(72px) rotate(-360deg);
+  }
+}
+
+.orbit-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #C4763A;
+  animation: orbit 5s linear infinite;
+}
