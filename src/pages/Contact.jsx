@@ -1,10 +1,8 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
+import { useForm as useRHForm } from 'react-hook-form'
+import { useForm as useFormspree } from '@formspree/react'
 import { motion } from 'framer-motion'
 import AnimatedSection from '../components/AnimatedSection'
-
-// Replace with your Formspree endpoint: https://formspree.io/f/xxxxxxxx
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/REPLACE_ME'
 
 function FieldError({ message }) {
   if (!message) return null
@@ -20,37 +18,20 @@ function FieldError({ message }) {
 }
 
 export default function Contact() {
-  const [submitted, setSubmitted] = useState(false)
-  const [sending, setSending] = useState(false)
-  const [sendError, setSendError] = useState(false)
+  const [fsState, fsSubmit] = useFormspree('xeewqkjj')
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm()
+  } = useRHForm()
 
-  const onSubmit = async (data) => {
-    setSending(true)
-    setSendError(false)
-    try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(data),
-      })
-      if (res.ok) {
-        setSubmitted(true)
-        reset()
-      } else {
-        setSendError(true)
-      }
-    } catch {
-      setSendError(true)
-    } finally {
-      setSending(false)
-    }
-  }
+  // Clear the form once Formspree confirms delivery
+  useEffect(() => {
+    if (fsState.succeeded) reset()
+  }, [fsState.succeeded, reset])
+
+  const onSubmit = (data) => fsSubmit(data)
 
   const inputClass =
     'w-full bg-transparent border-b-2 border-ink/15 focus:border-copper outline-none focus-visible:ring-0 py-3 font-body text-ink text-lg placeholder:text-smoke/35 transition-colors duration-200'
@@ -75,7 +56,7 @@ export default function Contact() {
             <p className="font-body text-smoke mb-16">We respond within one business day.</p>
           </AnimatedSection>
 
-          {submitted ? (
+          {fsState.succeeded ? (
             <AnimatedSection>
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -158,21 +139,21 @@ export default function Contact() {
                   <FieldError message={errors.message?.message} />
                 </div>
 
-                {sendError && (
-                  <p className="text-sm text-red-500 font-body text-center -mt-4">
-                    Something went wrong. Please try again or email us directly at{' '}
+                {fsState.errors?.length > 0 && (
+                  <p className="text-sm text-red-500 font-body text-center">
+                    Something went wrong. Please try again or email us at{' '}
                     <a href="mailto:hello@ovlo.ie" className="underline">hello@ovlo.ie</a>.
                   </p>
                 )}
 
                 <motion.button
                   type="submit"
-                  disabled={sending}
-                  whileHover={sending ? {} : { scale: 1.02 }}
-                  whileTap={sending ? {} : { scale: 0.98 }}
+                  disabled={fsState.submitting}
+                  whileHover={fsState.submitting ? {} : { scale: 1.02 }}
+                  whileTap={fsState.submitting ? {} : { scale: 0.98 }}
                   className="w-full py-5 bg-copper text-chalk font-display font-bold text-sm uppercase tracking-wider rounded hover:bg-copper-dark transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {sending ? 'Sending…' : 'Send us a message'}
+                  {fsState.submitting ? 'Sending…' : 'Send us a message'}
                 </motion.button>
               </form>
             </AnimatedSection>
