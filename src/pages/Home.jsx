@@ -216,6 +216,51 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Testimonials */}
+      <section className="py-24 px-6 bg-cream">
+        <div className="max-w-6xl mx-auto">
+          <AnimatedSection className="mb-16">
+            <p className="font-body text-xs uppercase tracking-widest text-copper mb-4">Results</p>
+            <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-ink">
+              What our clients say.
+            </h2>
+          </AnimatedSection>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                quote: "Ovlo doubled our email revenue within 60 days. The retention flows they built are still compounding six months later.",
+                name: "Aoife M.",
+                brand: "Irish Wellness Brand",
+              },
+              {
+                quote: "We'd been posting inconsistently for two years. Within a month of working with Ovlo our Reels were hitting 50k+ views.",
+                name: "Ciarán D.",
+                brand: "Supplement Brand",
+              },
+              {
+                quote: "They actually understand the Irish wellness market. Not a generic agency — they know our customer as well as we do.",
+                name: "Siobhán K.",
+                brand: "Fitness Brand",
+              },
+            ].map(({ quote, name, brand }, i) => (
+              <AnimatedSection key={i} delay={i * 0.1}>
+                <div className="bg-parchment rounded-2xl p-8 h-full flex flex-col">
+                  <p className="font-body text-2xl text-copper leading-none mb-4 select-none">"</p>
+                  <p className="font-body text-sm text-smoke leading-relaxed flex-1 mb-8">
+                    {quote}
+                  </p>
+                  <div>
+                    <p className="font-display font-semibold text-sm text-ink">{name}</p>
+                    <p className="font-body text-xs text-smoke/60 uppercase tracking-widest mt-0.5">{brand}</p>
+                  </div>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Strip */}
       <section className="py-24 px-6 bg-graphite">
         <div className="max-w-3xl mx-auto text-center">
