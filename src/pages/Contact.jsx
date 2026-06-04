@@ -142,7 +142,7 @@ export default function Contact() {
                 {fsState.errors?.length > 0 && (
                   <p className="text-sm text-red-500 font-body text-center">
                     Something went wrong. Please try again or email us at{' '}
-                    <a href="mailto:hello@ovlo.ie" className="underline">hello@ovlo.ie</a>.
+                    <a href="mailto:hello@olvo.ie" className="underline">hello@olvo.ie</a>.
                   </p>
                 )}
 
