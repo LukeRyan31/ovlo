@@ -46,10 +46,10 @@ export default function Footer() {
               Get in touch
             </p>
             <a
-              href="mailto:hello@olvo.ie"
+              href="mailto:hello@ovlo.ie"
               className="font-body text-sm text-copper hover:text-copper-light transition-colors duration-200"
             >
-              hello@olvo.ie
+              hello@ovlo.ie
             </a>
             <p className="font-body text-xs text-parchment/40 mt-4">
               🇮🇪 Based in Ireland
