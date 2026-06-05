@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, useInView, useMotionValue, useSpring, animate } from 'framer-motion'
 import AnimatedSection from '../components/AnimatedSection'
 import BeforeAfterSlider from '../components/BeforeAfterSlider'
+import WorkGallery from '../components/WorkGallery'
 
 /* ─────────────────────────────────────────
    Animated hero background blobs
@@ -394,6 +395,15 @@ export default function Home() {
               altBefore="Raw product photo before Ovlo"
               altAfter="Professional brand visual after Ovlo"
             />
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ── Work Gallery ── */}
+      <section className="py-24 px-6 bg-cream overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <AnimatedSection>
+            <WorkGallery animationDelay={0.3} />
           </AnimatedSection>
         </div>
       </section>
