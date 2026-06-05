@@ -147,6 +147,21 @@ function RingsIcon() {
   )
 }
 
+function AuditIcon() {
+  return (
+    <svg width="80" height="72" viewBox="0 0 80 72" fill="none" aria-hidden="true">
+      <rect x="4" y="8" width="72" height="8" rx="4" fill="#C4763A" opacity="0.15" />
+      <rect x="4" y="8" width="52" height="8" rx="4" fill="#C4763A" opacity="0.50" />
+      <rect x="4" y="24" width="72" height="8" rx="4" fill="#C4763A" opacity="0.15" />
+      <rect x="4" y="24" width="38" height="8" rx="4" fill="#C4763A" opacity="0.50" />
+      <rect x="4" y="40" width="72" height="8" rx="4" fill="#C4763A" opacity="0.15" />
+      <rect x="4" y="40" width="62" height="8" rx="4" fill="#C4763A" opacity="0.50" />
+      <rect x="4" y="56" width="72" height="8" rx="4" fill="#C4763A" opacity="0.15" />
+      <rect x="4" y="56" width="28" height="8" rx="4" fill="#C4763A" opacity="0.85" />
+    </svg>
+  )
+}
+
 /* ─────────────────────────────────────────
    Page
 ───────────────────────────────────────── */
@@ -257,11 +272,11 @@ export default function Home() {
           <AnimatedSection className="mb-16">
             <p className="font-body text-xs uppercase tracking-widest text-copper mb-4">What We Do</p>
             <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-ink">
-              Two levers.<br />Compounding returns.
+              Three levers.<br />Compounding returns.
             </h2>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <AnimatedSection delay={0.1}>
               <TiltCard className="h-full">
                 <div className="bg-parchment rounded-2xl p-10 h-full cursor-pointer"
@@ -294,6 +309,24 @@ export default function Home() {
                   <p className="font-body text-sm text-smoke leading-relaxed">
                     Most brands leave 40% of revenue on the table after the first purchase. We build
                     email flows and retention systems that bring customers back, and keep them coming.
+                  </p>
+                </div>
+              </TiltCard>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.3}>
+              <TiltCard className="h-full">
+                <div className="bg-parchment rounded-2xl p-10 h-full cursor-pointer">
+                  <AuditIcon />
+                  <p className="font-body text-xs uppercase tracking-widest text-copper mt-8 mb-3">
+                    Website Audit
+                  </p>
+                  <h3 className="font-display text-xl md:text-2xl font-semibold text-ink mb-4">
+                    Know what's holding you back.
+                  </h3>
+                  <p className="font-body text-sm text-smoke leading-relaxed">
+                    We audit your website for UX, SEO, conversion paths, and page speed — then give
+                    you a clear action plan to fix what matters most.
                   </p>
                 </div>
               </TiltCard>
