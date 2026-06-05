@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, useMotionValue, useSpring, animate } from 'framer-motion'
 import AnimatedSection from '../components/AnimatedSection'
+import BeforeAfterSlider from '../components/BeforeAfterSlider'
 
 /* ─────────────────────────────────────────
    Animated hero background blobs
@@ -371,6 +372,29 @@ export default function Home() {
               </AnimatedSection>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Before / After ── */}
+      <section className="py-24 px-6 bg-parchment">
+        <div className="max-w-6xl mx-auto">
+          <AnimatedSection className="mb-12">
+            <p className="font-body text-xs uppercase tracking-widest text-copper mb-4">Our Work</p>
+            <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-ink mb-4">
+              This is what Ovlo does.
+            </h2>
+            <p className="font-body text-base text-smoke max-w-xl leading-relaxed">
+              Raw product photo to premium brand visual — drag to see the difference.
+            </p>
+          </AnimatedSection>
+          <AnimatedSection delay={0.15}>
+            <BeforeAfterSlider
+              beforeSrc="/before.jpg"
+              afterSrc="/after.jpg"
+              altBefore="Raw product photo before Ovlo"
+              altAfter="Professional brand visual after Ovlo"
+            />
+          </AnimatedSection>
         </div>
       </section>
 
