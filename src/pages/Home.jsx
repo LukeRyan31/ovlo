@@ -289,8 +289,8 @@ export default function Home() {
                     Attention is the asset.
                   </h3>
                   <p className="font-body text-sm text-smoke leading-relaxed">
-                    We build short-form content engines — Reels, TikToks, Stories — that stop the
-                    scroll and move product. Every piece is built for your brand voice, not a template.
+                    We help boost your presence across social media platforms — growing your audience,
+                    building brand equity, and driving traffic that converts.
                   </p>
                 </div>
               </TiltCard>

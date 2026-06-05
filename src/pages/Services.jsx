@@ -85,7 +85,7 @@ function AnimatedRings() {
 }
 
 const contentDeliverables = [
-  'Reels & TikTok production',
+  'Social media platform growth',
   'Content calendar management',
   'Brand voice development',
   'Growth analytics & reporting',
@@ -144,9 +144,9 @@ export default function Services() {
                   Short-Form Content & Social Media
                 </h2>
                 <p className="font-body text-smoke text-base leading-relaxed mb-8">
-                  We produce and publish content designed to build brand equity and drive direct
-                  traffic. From concept to caption to posting cadence — we run the engine so you
-                  can run the business.
+                  We help boost your presence across social media platforms — building brand equity,
+                  growing your audience, and driving direct traffic. From concept to caption to
+                  posting cadence, we run the engine so you can run the business.
                 </p>
                 <ul className="space-y-3">
                   {contentDeliverables.map((item) => (
