@@ -1,168 +1,266 @@
-import { useState, useEffect, useRef } from 'react'
-import { motion, useMotionValue } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import { cn } from '../lib/utils'
+import { useEffect, useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
-/* ─── helpers ─── */
-function randomInRange(min, max) {
-  return Math.random() * (max - min) + min
-}
+/* ─────────────────────────────────────────
+   Media items — 8 images + 2 videos
+───────────────────────────────────────── */
+const MEDIA = [
+  { id: 1,  type: 'image', title: 'Brand Visual',      desc: 'Product creative for client', url: '/Testimonial/work-1.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 2,  type: 'video', title: 'Client Reel',       desc: 'Short-form content',          url: '/Testimonial/work-video-1.mp4', span: 'md:col-span-2 md:row-span-2 sm:col-span-2 sm:row-span-2' },
+  { id: 3,  type: 'image', title: 'Product Shot',      desc: 'Premium product photography', url: '/Testimonial/work-2.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-2 sm:row-span-2' },
+  { id: 4,  type: 'image', title: 'Content Creation',  desc: 'Social media content',        url: '/Testimonial/work-3.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
+  { id: 5,  type: 'video', title: 'Brand Reel',        desc: 'Video for retention',         url: '/Testimonial/work-video-2.mp4', span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 6,  type: 'image', title: 'Campaign Visual',   desc: 'Marketing creative',          url: '/Testimonial/work-4.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
+  { id: 7,  type: 'image', title: 'Wellness Brand',    desc: 'Irish wellness visual',       url: '/Testimonial/work-5.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 8,  type: 'image', title: 'Supplement Brand',  desc: 'Product content',             url: '/Testimonial/work-6.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-2 sm:row-span-2' },
+  { id: 9,  type: 'image', title: 'Fitness Visual',    desc: 'Brand photography',           url: '/Testimonial/work-7.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 10, type: 'image', title: 'Brand Content',     desc: 'Creative for social',         url: '/Testimonial/work-8.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
+]
 
-/* ─── Photo card ─── */
-function Photo({ src, alt, direction, width = 200, height = 200 }) {
-  const [rotation, setRotation] = useState(0)
+/* ─────────────────────────────────────────
+   Individual media item (image or video)
+───────────────────────────────────────── */
+function MediaItem({ item, className = '', onClick }) {
+  const videoRef = useRef(null)
+  const [inView, setInView]       = useState(false)
+  const [buffering, setBuffering] = useState(true)
 
   useEffect(() => {
-    const r = randomInRange(1, 4) * (direction === 'left' ? -1 : 1)
-    setRotation(r)
-  }, [direction])
+    if (item.type !== 'video') return
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => setInView(e.isIntersecting)),
+      { rootMargin: '50px', threshold: 0.1 }
+    )
+    if (videoRef.current) obs.observe(videoRef.current)
+    return () => { if (videoRef.current) obs.unobserve(videoRef.current) }
+  }, [item.type])
+
+  useEffect(() => {
+    if (item.type !== 'video' || !videoRef.current) return
+    let mounted = true
+    const play = async () => {
+      if (!videoRef.current || !mounted) return
+      try {
+        if (videoRef.current.readyState >= 3) {
+          setBuffering(false)
+          await videoRef.current.play()
+        } else {
+          setBuffering(true)
+          await new Promise((res) => { if (videoRef.current) videoRef.current.oncanplay = res })
+          if (mounted) { setBuffering(false); await videoRef.current.play() }
+        }
+      } catch {}
+    }
+    inView ? play() : videoRef.current.pause()
+    return () => {
+      mounted = false
+      if (videoRef.current) { videoRef.current.pause() }
+    }
+  }, [inView, item.type])
+
+  if (item.type === 'video') {
+    return (
+      <div className={`${className} relative overflow-hidden`}>
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover"
+          onClick={onClick}
+          playsInline muted loop preload="auto"
+          style={{ opacity: buffering ? 0.8 : 1, transition: 'opacity 0.2s', transform: 'translateZ(0)', willChange: 'transform' }}
+        >
+          <source src={item.url} type="video/mp4" />
+        </video>
+        {buffering && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          </div>
+        )}
+        {/* Video badge */}
+        <div className="absolute top-2 right-2 bg-copper/90 text-chalk text-[9px] font-display font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+          Video
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <motion.div
-      drag
-      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      whileTap={{ scale: 1.2, zIndex: 9999 }}
-      whileHover={{ scale: 1.1, rotateZ: 2 * (direction === 'left' ? -1 : 1), zIndex: 9999 }}
-      whileDrag={{ scale: 1.1, zIndex: 9999 }}
-      initial={{ rotate: 0 }}
-      animate={{ rotate: rotation }}
-      style={{
-        width,
-        height,
-        WebkitTouchCallout: 'none',
-        WebkitUserSelect: 'none',
-        userSelect: 'none',
-        touchAction: 'none',
-      }}
-      className="relative mx-auto shrink-0 cursor-grab active:cursor-grabbing"
-      draggable={false}
-      tabIndex={0}
-    >
-      <div className="relative h-full w-full overflow-hidden rounded-2xl shadow-lg ring-2 ring-white/60">
-        <img
-          src={src}
-          alt={alt}
-          draggable={false}
-          className="h-full w-full rounded-2xl object-cover"
-        />
-      </div>
-    </motion.div>
+    <img
+      src={item.url}
+      alt={item.title}
+      className={`${className} object-cover cursor-pointer`}
+      onClick={onClick}
+      loading="lazy"
+      decoding="async"
+    />
   )
 }
 
-/* ─── Gallery ─── */
-export default function WorkGallery({ animationDelay = 0.3 }) {
-  const [isVisible, setIsVisible]   = useState(false)
-  const [isLoaded,  setIsLoaded]    = useState(false)
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setIsVisible(true), animationDelay * 1000)
-    const t2 = setTimeout(() => setIsLoaded(true),  (animationDelay + 0.4) * 1000)
-    return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [animationDelay])
-
-  const photos = [
-    { id: 1, order: 0, x: '-350px', y: '20px',  zIndex: 80, direction: 'left',  src: '/Testimonial/work-1.png' },
-    { id: 2, order: 1, x: '-250px', y: '38px',  zIndex: 70, direction: 'left',  src: '/Testimonial/work-2.png' },
-    { id: 3, order: 2, x: '-130px', y: '10px',  zIndex: 60, direction: 'left',  src: '/Testimonial/work-3.png' },
-    { id: 4, order: 3, x: '-15px',  y: '45px',  zIndex: 50, direction: 'right', src: '/Testimonial/work-4.png' },
-    { id: 5, order: 4, x: '100px',  y: '15px',  zIndex: 40, direction: 'right', src: '/Testimonial/work-5.png' },
-    { id: 6, order: 5, x: '215px',  y: '40px',  zIndex: 30, direction: 'right', src: '/Testimonial/work-6.png' },
-    { id: 7, order: 6, x: '330px',  y: '8px',   zIndex: 20, direction: 'left',  src: '/Testimonial/work-7.png' },
-    { id: 8, order: 7, x: '445px',  y: '50px',  zIndex: 10, direction: 'right', src: '/Testimonial/work-8.png' },
-  ]
-
-  const containerVariants = {
-    hidden:  { opacity: 1 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.12, delayChildren: 0.05 },
-    },
-  }
-
-  const photoVariants = {
-    hidden: () => ({ x: 0, y: 0, scale: 1 }),
-    visible: (custom) => ({
-      x: custom.x,
-      y: custom.y,
-      scale: 1,
-      transition: {
-        type: 'spring',
-        stiffness: 65,
-        damping: 12,
-        mass: 1,
-        delay: custom.order * 0.12,
-      },
-    }),
-  }
+/* ─────────────────────────────────────────
+   Expanded modal
+───────────────────────────────────────── */
+function GalleryModal({ selectedItem, onClose, setSelectedItem, mediaItems }) {
+  const [dockPos, setDockPos] = useState({ x: 0, y: 0 })
 
   return (
-    <div className="relative">
-      {/* Subtle grid background */}
-      <div className="absolute inset-0 top-[180px] -z-10 h-[280px] w-full opacity-20
-        bg-[linear-gradient(to_right,#C4763A_1px,transparent_1px),linear-gradient(to_bottom,#C4763A_1px,transparent_1px)]
-        bg-[size:3rem_3rem]
-        [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+    <>
+      <motion.div
+        initial={{ scale: 0.98, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.98, opacity: 0 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 backdrop-blur-md p-4"
+        onClick={onClose}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={selectedItem.id}
+            className="relative w-full max-w-4xl max-h-[80vh] rounded-2xl overflow-hidden shadow-2xl"
+            initial={{ y: 20, scale: 0.97 }}
+            animate={{ y: 0, scale: 1, transition: { type: 'spring', stiffness: 500, damping: 30, mass: 0.5 } }}
+            exit={{ y: 20, scale: 0.97, transition: { duration: 0.15 } }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MediaItem item={selectedItem} className="w-full h-full max-h-[80vh]" />
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+              <h3 className="text-chalk font-display font-bold text-xl">{selectedItem.title}</h3>
+              <p className="text-chalk/70 font-body text-sm mt-1">{selectedItem.desc}</p>
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
+        {/* Close button */}
+        <motion.button
+          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-chalk/20 text-chalk flex items-center justify-center backdrop-blur-sm hover:bg-chalk/30 z-10"
+          onClick={onClose}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          aria-label="Close"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2L14 14M14 2L2 14" stroke="white" strokeWidth="2" strokeLinecap="round"/></svg>
+        </motion.button>
+      </motion.div>
+
+      {/* Draggable thumbnail dock */}
+      <motion.div
+        drag dragMomentum={false} dragElastic={0.1}
+        animate={{ x: dockPos.x, y: dockPos.y }}
+        onDragEnd={(_, info) => setDockPos(p => ({ x: p.x + info.offset.x, y: p.y + info.offset.y }))}
+        className="fixed z-[60] left-1/2 bottom-6 -translate-x-1/2 touch-none cursor-grab active:cursor-grabbing"
+      >
+        <div className="flex items-center -space-x-2 px-3 py-2 rounded-2xl bg-chalk/20 backdrop-blur-xl border border-white/20 shadow-xl">
+          {mediaItems.map((item, i) => (
+            <motion.div
+              key={item.id}
+              onClick={(e) => { e.stopPropagation(); setSelectedItem(item) }}
+              style={{ zIndex: selectedItem.id === item.id ? 30 : mediaItems.length - i }}
+              className={`relative w-9 h-9 rounded-lg overflow-hidden cursor-pointer flex-shrink-0 ${
+                selectedItem.id === item.id ? 'ring-2 ring-white shadow-lg' : 'hover:ring-2 hover:ring-white/40'
+              }`}
+              initial={{ rotate: i % 2 === 0 ? -12 : 12 }}
+              animate={{
+                scale:  selectedItem.id === item.id ? 1.2  : 1,
+                rotate: selectedItem.id === item.id ? 0    : i % 2 === 0 ? -12 : 12,
+                y:      selectedItem.id === item.id ? -8   : 0,
+              }}
+              whileHover={{ scale: 1.3, rotate: 0, y: -10, transition: { type: 'spring', stiffness: 400, damping: 25 } }}
+            >
+              <MediaItem item={item} className="w-full h-full" onClick={() => setSelectedItem(item)} />
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </>
+  )
+}
+
+/* ─────────────────────────────────────────
+   Main exported gallery
+───────────────────────────────────────── */
+export default function WorkGallery() {
+  const [items, setItems]               = useState(MEDIA)
+  const [selectedItem, setSelectedItem] = useState(null)
+  const [isDragging, setIsDragging]     = useState(false)
+
+  return (
+    <div>
       <p className="my-2 text-center font-body text-xs uppercase tracking-widest text-smoke">
         Content Created for Our Clients
       </p>
       <h3 className="mx-auto max-w-2xl text-center font-display text-4xl md:text-6xl font-extrabold tracking-tight text-ink py-3">
         Our <span className="text-copper">Work</span>
       </h3>
-
-      <p className="text-center font-body text-sm text-smoke/60 mb-8">
-        Drag the photos to explore
+      <p className="text-center font-body text-sm text-smoke/60 mb-10">
+        Click to expand · Videos play automatically
       </p>
 
-      {/* Fan */}
-      <div className="relative mb-10 h-[320px] w-full overflow-hidden">
-        <motion.div
-          className="relative mx-auto flex w-full max-w-7xl justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isVisible ? 1 : 0 }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
-        >
-          <motion.div
-            className="relative flex w-full justify-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate={isLoaded ? 'visible' : 'hidden'}
-          >
-            <div className="relative h-[200px] w-[200px]">
-              {[...photos].reverse().map((photo) => (
-                <motion.div
-                  key={photo.id}
-                  className="absolute left-0 top-0"
-                  style={{ zIndex: photo.zIndex }}
-                  variants={photoVariants}
-                  custom={{ x: photo.x, y: photo.y, order: photo.order }}
-                >
-                  <Photo
-                    width={200}
-                    height={200}
-                    src={photo.src}
-                    alt={`Ovlo client work ${photo.id}`}
-                    direction={photo.direction}
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
+      <AnimatePresence mode="wait">
+        {selectedItem ? (
+          <GalleryModal
+            key="modal"
+            selectedItem={selectedItem}
+            onClose={() => setSelectedItem(null)}
+            setSelectedItem={setSelectedItem}
+            mediaItems={items}
+          />
+        ) : null}
+      </AnimatePresence>
 
-      {/* CTA */}
-      <div className="flex w-full justify-center mt-4">
-        <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-          <Link
-            to="/contact"
-            className="btn-shimmer inline-block px-8 py-4 text-chalk font-display font-bold text-sm uppercase tracking-wider rounded shadow-md"
+      <motion.div
+        className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-3 auto-rows-[70px]"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden:  { opacity: 0 },
+          visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+        }}
+      >
+        {items.map((item, index) => (
+          <motion.div
+            key={item.id}
+            layoutId={`media-${item.id}`}
+            className={`relative overflow-hidden rounded-2xl cursor-pointer ${item.span}`}
+            onClick={() => !isDragging && setSelectedItem(item)}
+            variants={{
+              hidden:  { y: 40, scale: 0.92, opacity: 0 },
+              visible: { y: 0, scale: 1, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 25, delay: index * 0.05 } },
+            }}
+            whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+            drag
+            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            dragElastic={1}
+            onDragStart={() => setIsDragging(true)}
+            onDragEnd={(_, info) => {
+              setIsDragging(false)
+              if (Math.abs(info.offset.x + info.offset.y) > 50) {
+                const newItems = [...items]
+                const dragged  = newItems.splice(index, 1)[0]
+                const target   = (info.offset.x + info.offset.y) > 0
+                  ? Math.min(index + 1, items.length - 1)
+                  : Math.max(index - 1, 0)
+                newItems.splice(target, 0, dragged)
+                setItems(newItems)
+              }
+            }}
           >
-            Get results like these →
-          </Link>
-        </motion.div>
-      </div>
+            <MediaItem
+              item={item}
+              className="absolute inset-0 w-full h-full"
+              onClick={() => !isDragging && setSelectedItem(item)}
+            />
+            {/* Hover overlay */}
+            <motion.div
+              className="absolute inset-0 flex flex-col justify-end p-3"
+              initial={{ opacity: 0 }}
+              whileHover={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <h3 className="relative text-chalk font-display font-semibold text-sm line-clamp-1">{item.title}</h3>
+              <p className="relative text-chalk/70 font-body text-xs mt-0.5 line-clamp-1">{item.desc}</p>
+            </motion.div>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   )
 }
