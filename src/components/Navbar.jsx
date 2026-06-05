@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 
 const navLinks = [
   { to: '/', label: 'Home' },
@@ -12,6 +12,8 @@ export default function Navbar() {
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 })
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -34,6 +36,13 @@ export default function Navbar() {
   }
 
   return (
+    <>
+    {/* Scroll progress bar */}
+    <motion.div
+      style={{ scaleX }}
+      className="fixed top-0 left-0 right-0 h-[3px] bg-copper origin-left z-[9999] pointer-events-none"
+    />
+
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
@@ -133,5 +142,6 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </header>
+    </>
   )
 }

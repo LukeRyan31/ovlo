@@ -1,6 +1,26 @@
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useSpring } from 'framer-motion'
 import AnimatedSection from '../components/AnimatedSection'
+
+function TiltCard({ children, className = '' }) {
+  const ref = useRef(null)
+  const rotX = useSpring(0, { stiffness: 200, damping: 20 })
+  const rotY = useSpring(0, { stiffness: 200, damping: 20 })
+  const onMouseMove = (e) => {
+    const rect = ref.current.getBoundingClientRect()
+    rotX.set(-(((e.clientY - rect.top) / rect.height) - 0.5) * 8)
+    rotY.set((((e.clientX - rect.left) / rect.width) - 0.5) * 8)
+  }
+  const onMouseLeave = () => { rotX.set(0); rotY.set(0) }
+  return (
+    <motion.div ref={ref} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}
+      style={{ rotateX: rotX, rotateY: rotY, transformStyle: 'preserve-3d' }}
+      className={className}>
+      {children}
+    </motion.div>
+  )
+}
 
 function AnimatedTriangles() {
   return (
@@ -78,7 +98,8 @@ export default function Services() {
 
           {/* Card 1 */}
           <AnimatedSection delay={0.1}>
-            <div className="bg-parchment rounded-3xl p-12 md:p-16 grid md:grid-cols-2 gap-12 items-center">
+            <TiltCard>
+            <div className="bg-parchment rounded-3xl p-12 md:p-16 grid md:grid-cols-2 gap-12 items-center cursor-pointer">
               <div>
                 <p className="font-body text-xs uppercase tracking-widest text-copper mb-4">
                   Service 01
@@ -104,11 +125,13 @@ export default function Services() {
                 <AnimatedTriangles />
               </div>
             </div>
+            </TiltCard>
           </AnimatedSection>
 
           {/* Card 2 */}
           <AnimatedSection delay={0.15}>
-            <div className="bg-graphite rounded-3xl p-12 md:p-16 grid md:grid-cols-2 gap-12 items-center">
+            <TiltCard>
+            <div className="bg-graphite rounded-3xl p-12 md:p-16 grid md:grid-cols-2 gap-12 items-center cursor-pointer">
               <div className="flex items-center justify-center order-2 md:order-1">
                 <AnimatedRings />
               </div>
@@ -134,6 +157,7 @@ export default function Services() {
                 </ul>
               </div>
             </div>
+            </TiltCard>
           </AnimatedSection>
         </div>
       </section>
@@ -144,12 +168,14 @@ export default function Services() {
           <p className="font-body text-smoke max-w-sm mx-auto leading-relaxed">
             Not sure which applies to you? We offer a free brand audit call to figure it out together.
           </p>
-          <Link
-            to="/contact"
-            className="inline-block mt-6 text-copper font-display font-semibold text-sm underline underline-offset-4 hover:text-copper-dark transition-colors duration-200"
-          >
-            Book a free audit call →
-          </Link>
+          <motion.div className="inline-block mt-6" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+            <Link
+              to="/contact"
+              className="btn-shimmer inline-block px-7 py-3 text-chalk font-display font-bold text-sm uppercase tracking-wider rounded shadow-md"
+            >
+              Book a free audit call →
+            </Link>
+          </motion.div>
         </AnimatedSection>
       </section>
     </motion.div>
