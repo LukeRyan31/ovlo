@@ -1,8 +1,10 @@
-import { useRef, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, useInView, useMotionValue, useSpring, animate } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedSection from '../components/AnimatedSection'
-import WorkGallery from '../components/WorkGallery'
+import ShinyButton from '../components/ShinyButton'
+
+const ROTATING_WORDS = ['shortlists.', 'summaries.', 'submissions.']
 
 /* ─────────────────────────────────────────
    Animated hero background blobs
@@ -39,9 +41,9 @@ function HeroBackground() {
    Marquee keyword ticker
 ───────────────────────────────────────── */
 const keywords = [
-  'Short-Form Content', '·', 'Email Retention', '·', 'Irish Wellness', '·',
-  'Supplement Brands', '·', 'Fitness Brands', '·', 'Social Media', '·',
-  'Brand Scaling', '·', 'Content Strategy', '·',
+  'CV Screening', '·', 'Match Scoring', '·', 'Screening Questions', '·',
+  'Candidate Summaries', '·', 'Shortlist Export', '·', 'Recruiter Notes', '·',
+  'Candidate Tracking', '·', 'Job Spec Parsing', '·',
 ]
 
 function MarqueeTicker() {
@@ -64,101 +66,486 @@ function MarqueeTicker() {
 }
 
 /* ─────────────────────────────────────────
-   Animated stat counter
+   Problem section — 4 pain cards
 ───────────────────────────────────────── */
-function StatCounter({ value, suffix = '', prefix = '', label }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, amount: 0.5 })
-  const motionVal = useMotionValue(0)
-  const [display, setDisplay] = useState('0')
+const PAIN_CARDS = [
+  {
+    title: 'CV overload',
+    body: 'Too many applications to review properly. The good candidates are in there — somewhere under the pile.',
+  },
+  {
+    title: 'Messy job specs',
+    body: 'Important requirements get lost across emails, notes, and client calls. Every recruiter holds a slightly different version of the role.',
+  },
+  {
+    title: 'Slow shortlists',
+    body: 'Good candidates take too long to package and send to clients — and slow submissions lose placements.',
+  },
+  {
+    title: 'Manual candidate notes',
+    body: 'Recruiters repeat the same admin across every role: summarising CVs, rewriting notes, formatting submissions.',
+  },
+]
 
-  useEffect(() => {
-    if (!inView) return
-    const controls = animate(motionVal, value, {
-      duration: 1.8,
-      ease: [0.16, 1, 0.3, 1],
-    })
-    const unsub = motionVal.on('change', (v) => {
-      setDisplay(v % 1 === 0 ? Math.round(v).toString() : v.toFixed(1))
-    })
-    return () => { controls.stop(); unsub() }
-  }, [inView, value, motionVal])
-
+function ProblemSection() {
   return (
-    <div ref={ref} className="text-center">
-      <p className="font-display font-extrabold text-4xl md:text-5xl text-ink tracking-tight">
-        {prefix}{display}{suffix}
-      </p>
-      <p className="font-body text-xs uppercase tracking-widest text-smoke mt-2">{label}</p>
+    <section className="py-24 px-6 bg-cream">
+      <div className="max-w-6xl mx-auto">
+        <AnimatedSection className="mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-copper/10 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-copper" />
+            <p className="font-body font-semibold text-xs uppercase tracking-widest text-copper">The Problem</p>
+          </div>
+          <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-ink mb-6">
+            Recruiters aren't short on candidates.<br />They're short on time.
+          </h2>
+          <p className="font-body text-base text-smoke max-w-2xl leading-relaxed">
+            Recruitment teams waste hours every week reading CVs, rewriting candidate summaries,
+            switching between inboxes and spreadsheets, chasing notes, and preparing client
+            submissions manually.
+          </p>
+        </AnimatedSection>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {PAIN_CARDS.map((card, i) => (
+            <AnimatedSection key={card.title} delay={i * 0.1}>
+              <motion.div
+                className="bg-parchment rounded-2xl p-8 h-full cursor-default"
+                whileHover={{ y: -4, boxShadow: '0 16px 40px rgba(196,118,58,0.12)' }}
+                transition={{ duration: 0.25 }}
+              >
+                <span className="inline-block w-2 h-2 rounded-full bg-copper mb-5" />
+                <h3 className="font-display font-bold text-lg text-ink mb-3">{card.title}</h3>
+                <p className="font-body text-sm text-smoke leading-relaxed">{card.body}</p>
+              </motion.div>
+            </AnimatedSection>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─────────────────────────────────────────
+   Solution — the workflow, step by step
+───────────────────────────────────────── */
+const WORKFLOW_STEPS = [
+  { label: 'Job spec in',          desc: 'Upload or forward a job spec — from email, a doc, or rough client notes.' },
+  { label: 'CVs in',               desc: 'Upload CVs directly or connect an inbox or folder where applications land.' },
+  { label: 'AI comparison',        desc: 'Each candidate is compared against the role requirements automatically.' },
+  { label: 'Recruiter review',     desc: 'You get match scores, strengths, concerns, and tailored screening questions per candidate.' },
+  { label: 'Client-ready summary', desc: 'AI drafts a polished candidate profile, ready to send to the client.' },
+  { label: 'You decide',           desc: 'The recruiter reviews and edits everything before anything is sent.' },
+]
+
+function SolutionSection() {
+  return (
+    <section className="py-24 px-6 bg-parchment">
+      <div className="max-w-6xl mx-auto">
+        <AnimatedSection className="mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-copper/10 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-copper" />
+            <p className="font-body font-semibold text-xs uppercase tracking-widest text-copper">The Workflow</p>
+          </div>
+          <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-ink mb-6">
+            An AI workflow for the admin between<br className="hidden md:block" /> CV received and candidate submitted.
+          </h2>
+          <p className="font-body text-base text-smoke max-w-2xl leading-relaxed">
+            The recruiter always makes the final decision. Ovlo simply helps them review,
+            organise, and present candidates faster.
+          </p>
+        </AnimatedSection>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+          {WORKFLOW_STEPS.map((step, i) => (
+            <AnimatedSection key={step.label} delay={i * 0.08}>
+              <div className="flex items-start gap-5">
+                <div className="w-12 h-12 rounded-full border-2 border-copper/30 bg-parchment flex items-center justify-center flex-shrink-0">
+                  <span className="font-display font-extrabold text-sm text-copper">{String(i + 1).padStart(2, '0')}</span>
+                </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-ink mb-2">{step.label}</h3>
+                  <p className="font-body text-sm text-smoke leading-relaxed">{step.desc}</p>
+                </div>
+              </div>
+            </AnimatedSection>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─────────────────────────────────────────
+   Example output — candidate report mockup
+───────────────────────────────────────── */
+function ScoreBar({ score }) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex-1 h-2 rounded-full bg-white/10 overflow-hidden">
+        <motion.div
+          className="h-full rounded-full bg-copper"
+          initial={{ width: 0 }}
+          whileInView={{ width: `${score}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.1, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.3 }}
+        />
+      </div>
+      <span className="font-display font-extrabold text-copper text-lg">{score}%</span>
     </div>
   )
 }
 
-/* ─────────────────────────────────────────
-   3-D tilt card wrapper
-───────────────────────────────────────── */
-function TiltCard({ children, className = '' }) {
-  const ref = useRef(null)
-  const rotX = useSpring(0, { stiffness: 200, damping: 20 })
-  const rotY = useSpring(0, { stiffness: 200, damping: 20 })
-
-  const onMouseMove = (e) => {
-    const rect = ref.current.getBoundingClientRect()
-    const x = (e.clientX - rect.left) / rect.width  - 0.5
-    const y = (e.clientY - rect.top)  / rect.height - 0.5
-    rotX.set(-y * 10)
-    rotY.set(x * 10)
-  }
-  const onMouseLeave = () => { rotX.set(0); rotY.set(0) }
-
+function ExampleOutputSection() {
   return (
-    <motion.div
-      ref={ref}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      style={{ rotateX: rotX, rotateY: rotY, transformStyle: 'preserve-3d' }}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <section className="py-24 px-6 bg-graphite overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        <AnimatedSection className="mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-copper/20 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-copper" />
+            <p className="font-body font-semibold text-xs uppercase tracking-widest text-copper">Example Output</p>
+          </div>
+          <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-chalk">
+            What your recruiters see<br />for every candidate.
+          </h2>
+        </AnimatedSection>
+
+        <AnimatedSection delay={0.15}>
+          <div className="rounded-3xl bg-white/[0.05] border border-white/10 p-8 md:p-12">
+
+            {/* Header row */}
+            <div className="flex flex-wrap items-start justify-between gap-6 mb-8 pb-8 border-b border-white/10">
+              <div>
+                <p className="font-body text-xs uppercase tracking-widest text-parchment/40 mb-1">Candidate</p>
+                <p className="font-display font-extrabold text-2xl text-chalk">Sarah M.</p>
+                <p className="font-body text-sm text-parchment/50 mt-1">Sales Development · Dublin</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-copper/20 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-copper" />
+                  <span className="font-display font-bold text-xs uppercase tracking-wider text-copper">Strong fit</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-10">
+              {/* Left column */}
+              <div className="space-y-8">
+                <div>
+                  <p className="font-body text-xs uppercase tracking-widest text-parchment/40 mb-3">Match score</p>
+                  <ScoreBar score={86} />
+                </div>
+
+                <div>
+                  <p className="font-body text-xs uppercase tracking-widest text-copper mb-3">Strengths</p>
+                  <ul className="space-y-2.5">
+                    {['B2B sales experience', 'CRM experience', 'Strong outbound background'].map((s) => (
+                      <li key={s} className="flex items-start gap-3">
+                        <span className="w-1.5 h-1.5 rounded-full bg-copper flex-shrink-0 mt-1.5" />
+                        <span className="font-body text-sm text-parchment/70">{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <p className="font-body text-xs uppercase tracking-widest text-parchment/40 mb-3">Concerns</p>
+                  <ul className="space-y-2.5">
+                    <li className="flex items-start gap-3">
+                      <span className="w-1.5 h-1.5 rounded-full bg-parchment/30 flex-shrink-0 mt-1.5" />
+                      <span className="font-body text-sm text-parchment/70">No direct SaaS experience listed</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Right column */}
+              <div className="space-y-8">
+                <div>
+                  <p className="font-body text-xs uppercase tracking-widest text-copper mb-3">Screening questions</p>
+                  <ul className="space-y-2.5">
+                    {[
+                      'What outbound targets have you worked to?',
+                      'Have you sold into SMEs or enterprise accounts?',
+                      'What CRM systems have you used?',
+                    ].map((q) => (
+                      <li key={q} className="flex items-start gap-3">
+                        <span className="font-display font-bold text-copper text-xs mt-0.5 flex-shrink-0">?</span>
+                        <span className="font-body text-sm text-parchment/70">{q}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="rounded-2xl bg-white/[0.05] border border-white/10 p-6">
+                  <p className="font-body text-xs uppercase tracking-widest text-parchment/40 mb-3">Client-ready summary</p>
+                  <p className="font-body text-sm text-parchment/70 leading-relaxed italic">
+                    "Sarah is a strong sales candidate with 4 years of B2B experience, proven
+                    outbound exposure, and strong CRM usage. She appears well suited for a sales
+                    development or account executive role, subject to confirmation around SaaS
+                    experience and target ownership."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer note */}
+            <div className="mt-10 pt-6 border-t border-white/10">
+              <p className="font-body text-xs text-parchment/40">
+                Every output is reviewed and edited by your recruiter before anything reaches a client.
+              </p>
+            </div>
+          </div>
+        </AnimatedSection>
+      </div>
+    </section>
   )
 }
 
 /* ─────────────────────────────────────────
-   SVG card icons
+   How It Works — numbered steps
 ───────────────────────────────────────── */
-function TriangleIcon() {
+const HOW_STEPS = [
+  {
+    n: '01',
+    tag: 'Discovery',
+    title: 'Send us the workflow.',
+    body: "We look at how your agency currently handles CVs, job specs, notes, and client submissions. No guesswork — the system is built around your specific process.",
+  },
+  {
+    n: '02',
+    tag: 'Build',
+    title: 'We build your AI system.',
+    body: 'We create a workflow around your current tools — Gmail, Outlook, Google Drive, Airtable, Sheets, Notion, or your ATS. Nothing to rip out or replace.',
+  },
+  {
+    n: '03',
+    tag: 'Review faster',
+    title: 'Your recruiters move faster.',
+    body: 'Your team gets ranked candidates, screening questions, and client-ready summaries — without starting from scratch on every role.',
+  },
+]
+
+function HowItWorksSection() {
   return (
-    <svg width="80" height="72" viewBox="0 0 80 72" fill="none" aria-hidden="true">
-      <polygon points="40,4 76,68 4,68" fill="#C4763A" opacity="0.12" />
-      <polygon points="52,14 78,62 26,62" fill="#C4763A" opacity="0.28" />
-      <polygon points="40,26 64,58 16,58" fill="#C4763A" opacity="0.60" />
-    </svg>
+    <section className="py-24 px-6 bg-cream">
+      <div className="max-w-6xl mx-auto">
+        <AnimatedSection className="mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-copper/10 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-copper" />
+            <p className="font-body font-semibold text-xs uppercase tracking-widest text-copper">How It Works</p>
+          </div>
+          <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-ink">
+            From CV pile to shortlist<br />in minutes.
+          </h2>
+        </AnimatedSection>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 relative">
+          <div className="hidden md:block absolute top-8 left-[16.67%] right-[16.67%] h-px bg-copper/15 z-0" />
+          {HOW_STEPS.map((step, i) => (
+            <AnimatedSection key={step.n} delay={i * 0.15}>
+              <div className="flex items-center gap-4 mb-8">
+                <div className="relative z-10 w-16 h-16 rounded-full border-2 border-copper/30 bg-cream flex items-center justify-center flex-shrink-0">
+                  <span className="font-display font-extrabold text-lg text-copper">{step.n}</span>
+                </div>
+              </div>
+              <p className="font-body text-xs uppercase tracking-widest text-copper mb-3">{step.tag}</p>
+              <h3 className="font-display text-xl font-bold text-ink mb-3">{step.title}</h3>
+              <p className="font-body text-sm text-smoke leading-relaxed">{step.body}</p>
+            </AnimatedSection>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
-function RingsIcon() {
+/* ─────────────────────────────────────────
+   Who It's For — recruiter types
+───────────────────────────────────────── */
+const FOCUS_ROLES = [
+  {
+    label: 'Boutique Agencies',
+    pain: "Your consultants wear every hat — sourcing, screening, client calls, submissions. The admin between CV and shortlist eats the hours that should go on relationships.",
+    points: [
+      'CVs scored against the job spec before anyone reads them',
+      'Client-ready summaries drafted automatically',
+      'Consultants spend their time on candidates and clients',
+    ],
+  },
+  {
+    label: 'Solo Recruiters',
+    pain: "You are the whole agency. Every hour spent formatting candidate profiles or rewriting notes is an hour you're not billing or placing.",
+    points: [
+      'One workflow handles screening, scoring, and summaries',
+      'Works with the tools you already use — inbox, Drive, Sheets',
+      'Compete with bigger agencies on speed of submission',
+    ],
+  },
+  {
+    label: 'High-Volume Teams',
+    pain: "Hundreds of applications per role. Temp desks, high churn, constant intake. Proper review of every CV simply isn't possible manually.",
+    points: [
+      'Every CV reviewed and ranked — none slip through unread',
+      'Candidates tracked by role, stage, score, and next action',
+      'Consistent submission quality across the whole team',
+    ],
+  },
+]
+
+function FocusSection() {
+  const [active, setActive] = useState('Boutique Agencies')
+  const current = FOCUS_ROLES.find((r) => r.label === active)
+
   return (
-    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" aria-hidden="true">
-      <circle cx="40" cy="40" r="36" stroke="#C4763A" strokeWidth="1.5" opacity="0.20" />
-      <circle cx="40" cy="40" r="24" stroke="#C4763A" strokeWidth="2" opacity="0.45" />
-      <circle cx="40" cy="40" r="12" fill="#C4763A" opacity="0.75" />
-    </svg>
+    <section className="py-24 px-6 bg-parchment">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-16 items-start">
+
+          {/* Left — text + role buttons */}
+          <div>
+            <AnimatedSection className="mb-10">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-copper/10 rounded-full mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-copper" />
+                <p className="font-body font-semibold text-xs uppercase tracking-widest text-copper">Who It's For</p>
+              </div>
+              <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-ink mb-6">
+                Built for recruitment agencies.
+              </h2>
+              <p className="font-body text-base text-smoke max-w-xl leading-relaxed">
+                Boutique agencies, solo recruiters, sales and tech desks, healthcare recruiters,
+                temp staffing, high-volume teams. If your recruiters spend more time preparing
+                candidates than placing them, that's the problem we fix.
+              </p>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.15}>
+              <div className="flex flex-wrap gap-4">
+                {FOCUS_ROLES.map(({ label }) => {
+                  const isActive = active === label
+                  return (
+                    <motion.button
+                      key={label}
+                      onClick={() => setActive(label)}
+                      className={`px-6 py-3 border-2 font-display font-semibold text-sm uppercase tracking-wide rounded-full transition-colors duration-200 ${
+                        isActive
+                          ? 'bg-copper border-copper text-chalk'
+                          : 'border-copper text-copper hover:bg-copper hover:text-chalk'
+                      }`}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.97 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      {label}
+                    </motion.button>
+                  )
+                })}
+              </div>
+            </AnimatedSection>
+          </div>
+
+          {/* Right — role detail card */}
+          <AnimatedSection delay={0.2}>
+            <div className="relative rounded-2xl overflow-hidden border border-ink/8 bg-parchment min-h-72">
+              <AnimatePresence mode="wait">
+                {current && (
+                  <motion.div
+                    key={current.label}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    className="p-8"
+                  >
+                    {/* Label badge */}
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-copper/10 rounded-full mb-6">
+                      <span className="w-1.5 h-1.5 rounded-full bg-copper" />
+                      <p className="font-display font-bold text-xs uppercase tracking-wider text-copper">
+                        {current.label}
+                      </p>
+                    </div>
+
+                    {/* Pain point */}
+                    <p className="font-body text-xs uppercase tracking-widest text-smoke/50 mb-2">The problem</p>
+                    <p className="font-body text-sm text-smoke leading-relaxed italic mb-6 border-l-2 border-copper/30 pl-4">
+                      "{current.pain}"
+                    </p>
+
+                    {/* What we handle */}
+                    <p className="font-body text-xs uppercase tracking-widest text-smoke/50 mb-3">What changes</p>
+                    <ul className="space-y-2.5">
+                      {current.points.map((point) => (
+                        <li key={point} className="flex items-start gap-3">
+                          <span className="w-1.5 h-1.5 rounded-full bg-copper flex-shrink-0 mt-1.5" />
+                          <span className="font-body text-sm text-smoke">{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </AnimatedSection>
+
+        </div>
+      </div>
+    </section>
   )
 }
 
-function AuditIcon() {
+/* ─────────────────────────────────────────
+   Trust & compliance section
+───────────────────────────────────────── */
+const TRUST_POINTS = [
+  'Human review required on every output',
+  'No automated hiring decisions',
+  'Recruiter controls the scoring criteria',
+  'Everything can be edited before sending',
+  'Sensitive candidate data handled carefully',
+]
+
+function TrustSection() {
   return (
-    <svg width="80" height="72" viewBox="0 0 80 72" fill="none" aria-hidden="true">
-      <rect x="4" y="8" width="72" height="8" rx="4" fill="#C4763A" opacity="0.15" />
-      <rect x="4" y="8" width="52" height="8" rx="4" fill="#C4763A" opacity="0.50" />
-      <rect x="4" y="24" width="72" height="8" rx="4" fill="#C4763A" opacity="0.15" />
-      <rect x="4" y="24" width="38" height="8" rx="4" fill="#C4763A" opacity="0.50" />
-      <rect x="4" y="40" width="72" height="8" rx="4" fill="#C4763A" opacity="0.15" />
-      <rect x="4" y="40" width="62" height="8" rx="4" fill="#C4763A" opacity="0.50" />
-      <rect x="4" y="56" width="72" height="8" rx="4" fill="#C4763A" opacity="0.15" />
-      <rect x="4" y="56" width="28" height="8" rx="4" fill="#C4763A" opacity="0.85" />
-    </svg>
+    <section className="py-24 px-6 bg-cream">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-16 items-start">
+          <AnimatedSection>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-copper/10 rounded-full mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-copper" />
+              <p className="font-body font-semibold text-xs uppercase tracking-widest text-copper">Trust</p>
+            </div>
+            <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-ink mb-6">
+              Built to support recruiters, not replace judgement.
+            </h2>
+            <p className="font-body text-base text-smoke leading-relaxed">
+              Ovlo's AI workflows are designed for recruiter decision support only. They help
+              organise CVs, summarise information, and prepare candidate submissions. Final
+              screening, judgement, and hiring decisions remain with the recruiter and client.
+            </p>
+          </AnimatedSection>
+
+          <AnimatedSection delay={0.15}>
+            <ul className="space-y-4">
+              {TRUST_POINTS.map((point, i) => (
+                <motion.li
+                  key={point}
+                  className="flex items-center gap-4 bg-parchment rounded-2xl px-6 py-5"
+                  initial={{ opacity: 0, x: 14 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
+                >
+                  <span className="w-7 h-7 rounded-full bg-copper/15 flex items-center justify-center flex-shrink-0">
+                    <span className="text-copper text-sm font-bold">✓</span>
+                  </span>
+                  <span className="font-body text-sm text-smoke">{point}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </AnimatedSection>
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -166,6 +553,15 @@ function AuditIcon() {
    Page
 ───────────────────────────────────────── */
 export default function Home() {
+  const [titleNumber, setTitleNumber] = useState(0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTitleNumber((prev) => (prev + 1) % ROTATING_WORDS.length)
+    }, 2400)
+    return () => clearTimeout(timer)
+  }, [titleNumber])
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -184,60 +580,92 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0 }}
             className="font-body text-xs uppercase tracking-widest text-copper mb-6"
           >
-            Brand Growth Agency · Ireland
+            AI Workflow Systems · Recruitment Agencies
           </motion.p>
 
-          {/* Split headline — each word animates in */}
+          {/* Split headline — static words animate in, last word rotates */}
           <motion.h1
-            className="font-display text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-ink leading-none mb-8 max-w-3xl"
-            aria-label="Scale the brand you built."
+            className="font-display text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-ink leading-none mb-8 max-w-4xl"
+            aria-label="Turn messy CVs into client-ready shortlists."
           >
-            {['Scale', 'the', 'brand', 'you', 'built.'].map((word, i) => (
+            {/* Static words stagger in */}
+            {['Turn', 'messy', 'CVs', 'into', 'client-ready'].map((word, i) => (
               <motion.span
-                key={word}
-                className="inline-block mr-[0.25em] last:mr-0"
+                key={word + i}
+                className="inline-block mr-[0.25em]"
                 initial={{ opacity: 0, y: 32, skewX: -4 }}
                 animate={{ opacity: 1, y: 0, skewX: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 + i * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={{ duration: 0.5, delay: 0.05 + i * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                 {word}
               </motion.span>
             ))}
+
+            {/* Rotating word container */}
+            <motion.span
+              className="relative inline-block overflow-hidden align-bottom"
+              initial={{ opacity: 0, y: 32, skewX: -4 }}
+              animate={{ opacity: 1, y: 0, skewX: 0 }}
+              transition={{ duration: 0.5, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+            >
+              {/* Invisible spacer — holds width/height for the container */}
+              <span className="invisible select-none" aria-hidden="true">submissions.</span>
+              {/* Rotating words slide up/down through the container */}
+              {ROTATING_WORDS.map((word, index) => (
+                <motion.span
+                  key={index}
+                  className="absolute left-0 top-0 text-copper"
+                  initial={false}
+                  transition={{ type: 'spring', stiffness: 50, damping: 14 }}
+                  animate={
+                    titleNumber === index
+                      ? { y: 0, opacity: 1 }
+                      : { y: titleNumber > index ? -120 : 120, opacity: 0 }
+                  }
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </motion.span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.5, delay: 0.42, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="font-body text-lg md:text-xl text-smoke max-w-xl leading-relaxed mb-12"
           >
-            We help Irish wellness, supplement, and fitness brands grow through
-            content that converts and retention that compounds.
+            Ovlo builds AI workflow systems for recruitment agencies that screen CVs, compare
+            candidates against job specs, generate screening questions, and create polished
+            candidate summaries in minutes. Your recruiters stay in control — AI just removes
+            the repetitive admin.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.5, delay: 0.50, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Link
-                to="/contact"
-                className="btn-shimmer inline-block px-8 py-4 text-chalk font-display font-bold text-sm uppercase tracking-wider rounded shadow-md hover:shadow-copper/30 hover:shadow-lg transition-shadow duration-300"
-              >
-                Let's Talk
-              </Link>
-            </motion.div>
+            <ShinyButton to="/contact">Book a Demo</ShinyButton>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Link
                 to="/services"
                 className="inline-block px-8 py-4 border border-ink/20 text-ink font-display font-semibold text-sm uppercase tracking-wider rounded hover:border-copper hover:text-copper transition-all duration-200"
               >
-                See What We Do
+                See How It Works
               </Link>
             </motion.div>
           </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.62 }}
+            className="font-body text-xs text-smoke/60 mt-8"
+          >
+            Built for boutique recruitment agencies, solo recruiters, and high-volume hiring teams.
+          </motion.p>
         </div>
 
         <motion.div
@@ -252,190 +680,48 @@ export default function Home() {
       {/* ── Marquee ticker ── */}
       <MarqueeTicker />
 
-      {/* ── Stats ── */}
-      <section className="py-20 px-6 bg-cream">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedSection>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-12 border border-ink/8 rounded-2xl px-8 py-10 bg-parchment/50">
-              <StatCounter value={50}  suffix="+"  label="Brands Scaled" />
-              <StatCounter value={2.4} suffix="×"  label="Avg Revenue Growth" />
-              <StatCounter value={91}  suffix="%"  label="Client Retention" />
-              <StatCounter value={18}  suffix="M+" label="Content Impressions" />
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
+      {/* ── Problem ── */}
+      <ProblemSection />
 
-      {/* ── What We Do ── */}
-      <section className="py-24 px-6 bg-cream">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedSection className="mb-16">
-            <p className="font-body text-xs uppercase tracking-widest text-copper mb-4">What We Do</p>
-            <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-ink">
-              Three levers.<br />Compounding returns.
-            </h2>
-          </AnimatedSection>
+      {/* ── Solution / workflow ── */}
+      <SolutionSection />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <AnimatedSection delay={0.1}>
-              <TiltCard className="h-full">
-                <div className="bg-parchment rounded-2xl p-10 h-full cursor-pointer"
-                  style={{ transform: 'translateZ(0)', boxShadow: '0 4px 24px rgba(196,118,58,0)' }}>
-                  <TriangleIcon />
-                  <p className="font-body text-xs uppercase tracking-widest text-copper mt-8 mb-3">
-                    Content & Social
-                  </p>
-                  <h3 className="font-display text-xl md:text-2xl font-semibold text-ink mb-4">
-                    Attention is the asset.
-                  </h3>
-                  <p className="font-body text-sm text-smoke leading-relaxed">
-                    We help boost your presence across social media platforms — growing your audience,
-                    building brand equity, and driving traffic that converts.
-                  </p>
-                </div>
-              </TiltCard>
-            </AnimatedSection>
+      {/* ── Example output ── */}
+      <ExampleOutputSection />
 
-            <AnimatedSection delay={0.2}>
-              <TiltCard className="h-full">
-                <div className="bg-parchment rounded-2xl p-10 h-full cursor-pointer">
-                  <RingsIcon />
-                  <p className="font-body text-xs uppercase tracking-widest text-copper mt-8 mb-3">
-                    Email & Retention
-                  </p>
-                  <h3 className="font-display text-xl md:text-2xl font-semibold text-ink mb-4">
-                    Your list is your margin.
-                  </h3>
-                  <p className="font-body text-sm text-smoke leading-relaxed">
-                    Most brands leave 40% of revenue on the table after the first purchase. We build
-                    email flows and retention systems that bring customers back, and keep them coming.
-                  </p>
-                </div>
-              </TiltCard>
-            </AnimatedSection>
+      {/* ── How It Works ── */}
+      <HowItWorksSection />
 
-            <AnimatedSection delay={0.3}>
-              <TiltCard className="h-full">
-                <div className="bg-parchment rounded-2xl p-10 h-full cursor-pointer">
-                  <AuditIcon />
-                  <p className="font-body text-xs uppercase tracking-widest text-copper mt-8 mb-3">
-                    Website Audit
-                  </p>
-                  <h3 className="font-display text-xl md:text-2xl font-semibold text-ink mb-4">
-                    Know what's holding you back.
-                  </h3>
-                  <p className="font-body text-sm text-smoke leading-relaxed">
-                    We audit your website for UX, SEO, conversion paths, and page speed — then give
-                    you a clear action plan to fix what matters most.
-                  </p>
-                </div>
-              </TiltCard>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
+      {/* ── Who It's For ── */}
+      <FocusSection />
 
-      {/* ── Who We Work With ── */}
-      <section className="py-24 px-6 bg-parchment">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedSection className="mb-12">
-            <p className="font-body text-xs uppercase tracking-widest text-copper mb-4">Our Focus</p>
-            <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-ink mb-6">
-              Built for Irish wellness brands.
-            </h2>
-            <p className="font-body text-base text-smoke max-w-2xl leading-relaxed">
-              We work exclusively with wellness, supplement, and fitness brands based in Ireland.
-              That focus means we understand your customer, your regulations, and your opportunity.
-            </p>
-          </AnimatedSection>
+      {/* ── Trust & compliance ── */}
+      <TrustSection />
 
-          <AnimatedSection delay={0.15}>
-            <div className="flex flex-wrap gap-4">
-              {['Wellness', 'Supplements', 'Fitness'].map((tag) => (
-                <motion.span
-                  key={tag}
-                  className="px-6 py-3 border-2 border-copper text-copper font-display font-semibold text-sm uppercase tracking-wide rounded-full cursor-default"
-                  whileHover={{ backgroundColor: '#C4763A', color: '#FDFBF7', scale: 1.05, borderColor: '#C4763A' }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {tag}
-                </motion.span>
-              ))}
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ── Testimonials ── */}
-      <section className="py-24 px-6 bg-cream">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedSection className="mb-16">
-            <p className="font-body text-xs uppercase tracking-widest text-copper mb-4">Results</p>
-            <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-ink">
-              What our clients say.
-            </h2>
-          </AnimatedSection>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                quote: "Ovlo doubled our email revenue within 60 days. The retention flows they built are still compounding six months later.",
-                name: "Aoife M.", brand: "Irish Wellness Brand",
-              },
-              {
-                quote: "We'd been posting inconsistently for two years. Within a month of working with Ovlo our Reels were hitting 50k+ views.",
-                name: "Ciarán D.", brand: "Supplement Brand",
-              },
-              {
-                quote: "They actually understand the Irish wellness market. Not a generic agency — they know our customer as well as we do.",
-                name: "Siobhán K.", brand: "Fitness Brand",
-              },
-            ].map(({ quote, name, brand }, i) => (
-              <AnimatedSection key={i} delay={i * 0.1}>
-                <TiltCard>
-                  <div className="bg-parchment rounded-2xl p-8 h-full flex flex-col cursor-pointer">
-                    <p className="font-body text-2xl text-copper leading-none mb-4 select-none">"</p>
-                    <p className="font-body text-sm text-smoke leading-relaxed flex-1 mb-8">{quote}</p>
-                    <div>
-                      <p className="font-display font-semibold text-sm text-ink">{name}</p>
-                      <p className="font-body text-xs text-smoke/60 uppercase tracking-widest mt-0.5">{brand}</p>
-                    </div>
-                  </div>
-                </TiltCard>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* ── Work Gallery ── */}
-      <section className="py-24 px-6 bg-cream overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <AnimatedSection>
-            <WorkGallery animationDelay={0.3} />
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ── CTA Strip ── */}
+      {/* ── Book a Demo ── */}
       <section className="py-24 px-6 bg-graphite">
         <div className="max-w-3xl mx-auto text-center">
           <AnimatedSection>
             <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-chalk mb-4">
-              Ready to grow?
+              Ready to clear the CV pile?
             </h2>
             <p className="font-body text-parchment/60 text-lg mb-10">
-              Let's find out if we're the right fit.
+              Let's look at your agency's workflow and show you what an AI candidate
+              submission system would handle.
             </p>
-            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-              <Link
-                to="/contact"
-                className="btn-shimmer inline-block px-10 py-5 text-chalk font-display font-bold text-sm uppercase tracking-wider rounded shadow-lg hover:shadow-copper/20 hover:shadow-xl transition-shadow duration-300"
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 h-14 px-8 bg-copper text-chalk font-display font-bold text-sm uppercase tracking-wider rounded-full hover:bg-copper-dark transition-colors duration-200"
+            >
+              Book a Demo
+              <motion.span
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                className="inline-block"
               >
-                Start the Conversation
-              </Link>
-            </motion.div>
+                →
+              </motion.span>
+            </Link>
           </AnimatedSection>
         </div>
       </section>

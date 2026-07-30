@@ -2,19 +2,24 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 /* ─────────────────────────────────────────
-   Media items — 8 images + 2 videos
+   Media items — 13 images + 2 videos
 ───────────────────────────────────────── */
 const MEDIA = [
-  { id: 1,  type: 'image', title: 'Brand Visual',      desc: 'Product creative for client', url: '/Testimonial/work-1.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
-  { id: 2,  type: 'video', title: 'Client Reel',       desc: 'Short-form content',          url: '/Testimonial/work-video-1.mp4', span: 'md:col-span-2 md:row-span-2 sm:col-span-2 sm:row-span-2' },
-  { id: 3,  type: 'image', title: 'Product Shot',      desc: 'Premium product photography', url: '/Testimonial/work-2.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-2 sm:row-span-2' },
-  { id: 4,  type: 'image', title: 'Content Creation',  desc: 'Social media content',        url: '/Testimonial/work-3.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
-  { id: 5,  type: 'video', title: 'Brand Reel',        desc: 'Video for retention',         url: '/Testimonial/work-video-2.mp4', span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
-  { id: 6,  type: 'image', title: 'Campaign Visual',   desc: 'Marketing creative',          url: '/Testimonial/work-4.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
-  { id: 7,  type: 'image', title: 'Wellness Brand',    desc: 'Irish wellness visual',       url: '/Testimonial/work-5.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
-  { id: 8,  type: 'image', title: 'Supplement Brand',  desc: 'Product content',             url: '/Testimonial/work-6.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-2 sm:row-span-2' },
-  { id: 9,  type: 'image', title: 'Fitness Visual',    desc: 'Brand photography',           url: '/Testimonial/work-7.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
-  { id: 10, type: 'image', title: 'Brand Content',     desc: 'Creative for social',         url: '/Testimonial/work-8.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
+  { id: 1,  type: 'image', title: 'Brand Visual',        desc: 'Product creative for client',  url: '/Testimonial/work-1.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 2,  type: 'video', title: 'Client Reel',         desc: 'Short-form content',            url: '/Testimonial/work-video-1.mp4', span: 'md:col-span-2 md:row-span-2 sm:col-span-2 sm:row-span-2' },
+  { id: 3,  type: 'image', title: 'Product Shot',        desc: 'Premium product photography',   url: '/Testimonial/work-2.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-2 sm:row-span-2' },
+  { id: 4,  type: 'image', title: 'Content Creation',    desc: 'Social media content',          url: '/Testimonial/work-3.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
+  { id: 5,  type: 'video', title: 'Brand Reel',          desc: 'Video for retention',           url: '/Testimonial/work-video-2.mp4', span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 6,  type: 'image', title: 'Campaign Visual',     desc: 'Marketing creative',            url: '/Testimonial/work-4.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
+  { id: 7,  type: 'image', title: 'Wellness Brand',      desc: 'Irish wellness visual',         url: '/Testimonial/work-5.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 8,  type: 'image', title: 'Supplement Brand',    desc: 'Product content',               url: '/Testimonial/work-6.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-2 sm:row-span-2' },
+  { id: 9,  type: 'image', title: 'Fitness Visual',      desc: 'Brand photography',             url: '/Testimonial/work-7.png',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 10, type: 'image', title: 'Brand Content',       desc: 'Creative for social',           url: '/Testimonial/work-8.png',       span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
+  { id: 11, type: 'image', title: 'Supplement Creative', desc: 'Product photography',           url: '/Testimonial/work-9.jpg',       span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 12, type: 'image', title: 'Lifestyle Content',   desc: 'Fitness brand creative',        url: '/Testimonial/work-10.jpg',      span: 'md:col-span-2 md:row-span-2 sm:col-span-2 sm:row-span-2' },
+  { id: 13, type: 'image', title: 'Brand Photography',   desc: 'Premium brand visual',          url: '/Testimonial/work-11.jpg',      span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
+  { id: 14, type: 'image', title: 'Product Visual',      desc: 'Creative product shot',         url: '/Testimonial/work-12.jpg',      span: 'md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2' },
+  { id: 15, type: 'image', title: 'Fitness Content',     desc: 'Lifestyle brand photography',   url: '/Testimonial/work-13.jpg',      span: 'md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2' },
 ]
 
 /* ─────────────────────────────────────────
@@ -60,7 +65,7 @@ function MediaItem({ item, className = '', onClick }) {
 
   if (item.type === 'video') {
     return (
-      <div className={`${className} relative overflow-hidden`}>
+      <div className={`${className} relative overflow-hidden bg-parchment`}>
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
@@ -189,9 +194,7 @@ export default function WorkGallery() {
       <h3 className="mx-auto max-w-2xl text-center font-display text-4xl md:text-6xl font-extrabold tracking-tight text-ink py-3">
         Our <span className="text-copper">Work</span>
       </h3>
-      <p className="text-center font-body text-sm text-smoke/60 mb-10">
-        Click to expand · Videos play automatically
-      </p>
+      <div className="mb-10" />
 
       <AnimatePresence mode="wait">
         {selectedItem ? (

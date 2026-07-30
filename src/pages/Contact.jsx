@@ -49,9 +49,12 @@ export default function Contact() {
         <div className="max-w-2xl mx-auto">
 
           <AnimatedSection>
-            <p className="font-body text-xs uppercase tracking-widest text-copper mb-4">Work with us</p>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-copper/10 rounded-full mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-copper" />
+              <p className="font-body font-semibold text-xs uppercase tracking-widest text-copper">Book a Demo</p>
+            </div>
             <h1 className="font-display text-5xl md:text-6xl font-extrabold tracking-tight text-ink mb-4">
-              Tell us about your brand.
+              Tell us about your agency.
             </h1>
             <p className="font-body text-smoke mb-16">We respond within one business day.</p>
           </AnimatedSection>
@@ -96,13 +99,13 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className={labelClass}>Brand Name</label>
+                  <label className={labelClass}>Agency Name</label>
                   <input
                     {...register('brandName', {
-                      required: 'Brand name is required',
+                      required: 'Agency name is required',
                       minLength: { value: 2, message: 'At least 2 characters' },
                     })}
-                    placeholder="Your brand"
+                    placeholder="Your agency"
                     className={inputClass}
                   />
                   <FieldError message={errors.brandName?.message} />
@@ -126,14 +129,14 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className={labelClass}>Tell us about your brand</label>
+                  <label className={labelClass}>Tell us about your agency</label>
                   <textarea
                     {...register('message', {
                       required: 'A message is required',
                       minLength: { value: 20, message: 'Please tell us a bit more (20+ characters)' },
                     })}
                     rows={5}
-                    placeholder="What you sell, where you're at, what you're trying to fix..."
+                    placeholder="The roles you recruit for, how many CVs you handle per role, and how candidate submissions work today..."
                     className={`${inputClass} resize-none`}
                   />
                   <FieldError message={errors.message?.message} />
@@ -153,7 +156,7 @@ export default function Contact() {
                   whileTap={fsState.submitting ? {} : { scale: 0.98 }}
                   className="w-full py-5 bg-copper text-chalk font-display font-bold text-sm uppercase tracking-wider rounded hover:bg-copper-dark transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {fsState.submitting ? 'Sending…' : 'Send us a message'}
+                  {fsState.submitting ? 'Sending…' : 'Book a demo'}
                 </motion.button>
               </form>
             </AnimatedSection>

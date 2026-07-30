@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom'
 
 const navLinks = [
   { to: '/', label: 'Home' },
-  { to: '/services', label: 'Services' },
+  { to: '/services', label: 'How It Works' },
   { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/contact', label: 'Book a Demo' },
 ]
 
 export default function Footer() {
@@ -16,10 +16,10 @@ export default function Footer() {
           <div>
             <p className="font-display font-extrabold text-2xl text-chalk mb-3">Ovlo</p>
             <p className="font-body text-sm text-parchment/60 leading-relaxed mb-6">
-              Brand scaling for Irish wellness.
+              AI workflow systems for recruitment agencies.
             </p>
             <p className="font-body text-xs text-smoke">
-              © 2025 Ovlo. All rights reserved.
+              © 2026 Ovlo. All rights reserved.
             </p>
           </div>
 
@@ -59,7 +59,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-white/10 text-center">
           <p className="font-body text-xs text-smoke">
-            Built for brands that mean it.
+            Built for recruiters who'd rather be placing than processing.
           </p>
         </div>
       </div>

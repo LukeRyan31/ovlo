@@ -2,3 +2,7 @@ node_modules
 dist
 .DS_Store
 *.local
+
+# Business documents — never commit to a public repo
+Blip Payments/
+*.pdf
