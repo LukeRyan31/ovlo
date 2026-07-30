@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro'
 import EffectiveRateBar from '../components/EffectiveRateBar.astro'
-import ContactForm from '../components/ContactForm.astro'
+import ContactDetails from '../components/ContactDetails.astro'
 
 const problems = [
   {
@@ -53,7 +53,7 @@ const steps = [
   {
     n: '1',
     title: 'Send your statements',
-    body: 'One to three months, covering every merchant ID you hold. PDF or CSV, whatever your provider issues. Do not attach them to the contact form — get in touch first and we will send you secure upload instructions.',
+    body: 'One to three months, covering every merchant ID you hold. PDF or CSV, whatever your provider issues. Do not attach them to your first email — get in touch first and we will reply with a secure upload link.',
   },
   {
     n: '2',
@@ -83,7 +83,7 @@ const faqs = [
   },
   {
     q: 'My statements are commercially sensitive.',
-    a: 'They are, and we treat them that way. We do not share them, we do not pass them to any acquirer or provider, and we do not use them as examples. We will not ask you to email them or attach them to a web form — we send secure upload instructions instead. We delete them on request, and by default once the audit is complete unless you ask us to hold them.',
+    a: 'They are, and we treat them that way. We do not share them, we do not pass them to any acquirer or provider, and we do not use them as examples. We will not ask you to send them as an email attachment — we reply with a secure upload link instead. This site has no contact form, no analytics cookies and no third-party processor handling your enquiry: you email us directly. We delete statements on request, and by default once the audit is complete unless you ask us to hold them.',
   },
   {
     q: 'How long does it take?',
@@ -323,7 +323,7 @@ const faqSchema = {
         Tell us a little about your estate and we will send secure upload instructions by reply.
       </p>
       <div class="mt-10">
-        <ContactForm />
+        <ContactDetails />
       </div>
     </div>
   </section>

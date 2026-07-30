@@ -1,0 +1,103 @@
+---
+/**
+ * Direct email contact, replacing the previous Formspree form.
+ *
+ * Formspree stores submissions in the United States and documents no EU
+ * transfer safeguard — no standard contractual clauses, no Data Privacy
+ * Framework certification, no EU residency. On a site whose entire proposition
+ * is asking people to trust us with commercially sensitive documents, routing
+ * their enquiry through an undocumented US processor was the wrong trade.
+ *
+ * Direct email removes the transfer, removes the third-party processor, and
+ * leaves the site with no JavaScript and nothing stored on the visitor's
+ * device.
+ */
+
+interface Props {
+  /** Heading level so the component fits the surrounding outline */
+  as?: 'h2' | 'h3'
+}
+
+const { as: Heading = 'h3' } = Astro.props
+
+const subject = encodeURIComponent('Statement audit enquiry')
+const mailto = `mailto:hello@ovlo.ie?subject=${subject}`
+
+const include = [
+  'Your company and your role.',
+  'Roughly how many sites you operate, or your approximate annual card volume.',
+  'Who you process with today, if you know.',
+  'Anything about your card costs that has prompted you to look at this.',
+]
+
+const next = [
+  'We reply within one working day with a secure upload link.',
+  'You send one to three months of statements.',
+  'Five working days later you get your audit.',
+  'You decide what, if anything, you want to do next.',
+]
+---
+
+<div class="rounded-lg border border-ink/10 bg-parchment p-6 md:p-10">
+  <p class="text-lg leading-relaxed">Email us and we will take it from there.</p>
+
+  <p class="mt-5">
+    <a
+      href={mailto}
+      class="inline-block rounded-sm bg-copper-dark px-8 py-4 text-lg font-semibold text-chalk transition-colors hover:bg-copper-deep"
+    >
+      hello@ovlo.ie
+    </a>
+  </p>
+
+  <p class="mt-5 text-base leading-relaxed text-smoke">
+    No form, no tracking, and nothing stored on your device. Your enquiry goes straight to us.
+  </p>
+
+  <div class="mt-8 rounded-sm border-l-4 border-copper bg-chalk p-4 text-base leading-relaxed">
+    <strong class="font-semibold">Please do not attach statements to your first email.</strong> Card
+    processing statements are commercially sensitive and ordinary email is not the right way to move
+    them. Get in touch first and we will reply with a secure upload link.
+  </div>
+
+  <div class="mt-8 grid gap-8 sm:grid-cols-2">
+    <section>
+      <Heading class="text-lg font-semibold text-ink">Useful to include</Heading>
+      <ul class="mt-4 space-y-2.5">
+        {
+          include.map((item) => (
+            <li class="flex gap-2.5 text-base leading-relaxed text-smoke">
+              <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-copper" aria-hidden="true" />
+              <span>{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section>
+      <Heading class="text-lg font-semibold text-ink">What happens next</Heading>
+      <ol class="mt-4 space-y-3">
+        {
+          next.map((step, i) => (
+            <li class="flex gap-3">
+              <span
+                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-copper-dark text-base font-bold text-chalk"
+                aria-hidden="true"
+              >
+                {i + 1}
+              </span>
+              <span class="text-base leading-relaxed text-smoke">{step}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+  </div>
+
+  <p class="mt-8 border-t border-ink/15 pt-6 text-base leading-relaxed text-smoke">
+    Getting in touch does not commit you to anything. We do not add you to a mailing list and we do
+    not pass your details to anyone. See our <a href="/privacy" class="prose-link">privacy policy</a
+    >.
+  </p>
+</div>

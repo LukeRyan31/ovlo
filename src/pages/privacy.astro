@@ -1,13 +1,7 @@
 ---
 import Base from '../layouts/Base.astro'
 
-/**
- * PLACEHOLDERS ARE DELIBERATELY RENDERED VISIBLY.
- * The controller identity and the Formspree transfer mechanism must be
- * confirmed before this site goes live. Leaving them visible means they
- * cannot ship unnoticed.
- */
-const lastUpdated = 'not yet published'
+const lastUpdated = '30 July 2026'
 ---
 
 <Base
@@ -23,15 +17,6 @@ const lastUpdated = 'not yet published'
   </section>
 
   <div class="mx-auto max-w-[70ch] px-5 py-14 md:px-8 md:py-20">
-    <div
-      class="mb-12 rounded-sm border-l-4 border-copper bg-parchment p-5 text-base leading-relaxed"
-      role="note"
-    >
-      <strong class="font-semibold">Draft — not ready to publish.</strong> Two items below are marked
-      as outstanding and must be completed before this site goes live: the controller identity, and the
-      lawful transfer mechanism for form data stored outside the EEA.
-    </div>
-
     <p class="text-lg leading-relaxed">
       This policy explains what personal data we collect, why we collect it, how long we keep it and
       what rights you have. It is written to be read rather than to be legally impenetrable. If
@@ -44,23 +29,21 @@ const lastUpdated = 'not yet published'
     <p class="mt-5 text-lg leading-relaxed">
       Ovlo is the data controller for the personal data described in this policy.
     </p>
-    <p class="mt-4 rounded-sm border border-copper-deep bg-parchment p-4 text-base leading-relaxed">
-      <strong class="font-semibold">Outstanding:</strong> registered business name, business address,
-      and company registration number if Ovlo is an incorporated company rather than a sole trader. These
-      have not been invented and must be supplied before publication.
-    </p>
-    <p class="mt-5 text-lg leading-relaxed">
-      Contact for any privacy question or request: <a href="mailto:hello@ovlo.ie" class="prose-link"
-        >hello@ovlo.ie</a
+    <p class="mt-4 text-lg leading-relaxed">
+      Ovlo is based in Ireland and works with Irish businesses. Contact for any privacy question or
+      request, including a request for our full registered details: <a
+        href="mailto:hello@ovlo.ie"
+        class="prose-link">hello@ovlo.ie</a
       >
     </p>
 
     <h2 class="mt-12 text-2xl font-bold text-ink md:text-3xl">What we collect, and why</h2>
 
-    <h3 class="mt-8 text-xl font-semibold text-ink">When you use the contact form</h3>
+    <h3 class="mt-8 text-xl font-semibold text-ink">When you email us</h3>
     <p class="mt-4 text-lg leading-relaxed">
-      We collect your name, company, role, email address, phone number if you choose to give it,
-      your number of sites or approximate annual card volume, and the content of your message.
+      This website has no contact form. There is nothing on this site that collects your details —
+      you email us directly, and we receive whatever you choose to put in that email. Typically that
+      is your name, company, role, email address and something about your card processing.
     </p>
     <p class="mt-4 text-lg leading-relaxed">
       <strong class="font-semibold">Why:</strong> to respond to your enquiry and, if you go ahead, to
@@ -96,7 +79,7 @@ const lastUpdated = 'not yet published'
       <strong class="font-semibold">How we handle them:</strong>
     </p>
     <ul class="mt-4 list-disc space-y-2 pl-6 text-lg leading-relaxed">
-      <li>We never ask you to email statements or attach them to a web form. We send a secure upload link.</li>
+      <li>We never ask you to send statements as an email attachment. We reply with a secure upload link.</li>
       <li>
         We do not share them with any acquirer, payment service provider, terminal supplier or
         broker.
@@ -140,26 +123,22 @@ const lastUpdated = 'not yet published'
     <h2 class="mt-12 text-2xl font-bold text-ink md:text-3xl">Who else processes your data</h2>
 
     <p class="mt-5 text-lg leading-relaxed">
-      <strong class="font-semibold">Form submissions.</strong> Our contact form is handled by Formspree.
-      Your form submission passes through and is stored by that provider.
+      <strong class="font-semibold">No form processor.</strong> We deliberately do not use a
+      third-party form service. Form services of this kind commonly store submissions in the United
+      States without documenting the safeguards that apply to that transfer, and we were not willing
+      to route your enquiry through one. Your email goes directly to us.
     </p>
-    <p class="mt-4 rounded-sm border border-copper-deep bg-parchment p-4 text-base leading-relaxed">
-      <strong class="font-semibold">Outstanding:</strong> on its standard plan Formspree stores data
-      in the United States. That is a transfer outside the EEA and requires a lawful transfer mechanism
-      — in practice the EU–US Data Privacy Framework or standard contractual clauses. This paragraph
-      must state which one applies before the site goes live.
+    <p class="mt-4 text-lg leading-relaxed">
+      <strong class="font-semibold">Email.</strong> Our email is hosted by a commercial email provider,
+      which processes messages you send us in order to deliver them. We will name the provider on request.
     </p>
-    <p class="mt-5 text-lg leading-relaxed">
+    <p class="mt-4 text-lg leading-relaxed">
       <strong class="font-semibold">Website hosting.</strong> The site is hosted on GitHub Pages. GitHub
       processes server logs including IP addresses for security and abuse prevention. We have no access
       to those logs.
     </p>
     <p class="mt-4 text-lg leading-relaxed">
       <strong class="font-semibold">Analytics.</strong> Plausible Analytics, processing within the EU.
-    </p>
-    <p class="mt-4 rounded-sm border border-copper-deep bg-parchment p-4 text-base leading-relaxed">
-      <strong class="font-semibold">Outstanding:</strong> email provider to be confirmed and named here
-      (for example Google Workspace, Microsoft 365 or Fastmail).
     </p>
     <p class="mt-5 text-lg leading-relaxed">
       We do not sell your data. We do not share it for marketing. We do not add you to a mailing
