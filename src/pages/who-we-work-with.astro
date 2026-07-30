@@ -1,0 +1,196 @@
+---
+import Base from '../layouts/Base.astro'
+
+const multiSite = [
+  {
+    title: 'Fixed fees multiplied across sites',
+    body: 'A €25 monthly charge is a rounding error. The same charge applied to forty merchant IDs across twelve months is €12,000 a year, and it will not have been discussed since the day the estate was set up.',
+  },
+  {
+    title: 'A terminal estate that no longer matches the billing',
+    body: 'Sites close. Sites re-fit. Terminals fail and get replaced without the old unit being cancelled. Every one of those events leaves a rental line running, and there is no invoice arriving that would prompt anyone to check.',
+  },
+  {
+    title: 'Pre-authorisations that were never cleared',
+    body: 'A hotel takes a pre-authorisation at check-in. A restaurant takes one on opening a tab. If it is not cleared or reversed inside the card scheme’s window, an authorisation misuse fee applies. Individually trivial, and in a busy hospitality group not trivial at all. It is a front-of-house process problem that shows up as a finance line.',
+  },
+  {
+    title: 'Compliance and admin charges duplicated per merchant ID',
+    body: 'PCI fees, statement fees, minimum service charges — often applied separately against every merchant ID in the estate, whether or not anything is being delivered separately for each one.',
+  },
+  {
+    title: 'PCI non-compliance fees running unnoticed',
+    body: 'Charged monthly until a self-assessment questionnaire is completed. In a multi-site estate the questionnaire is sometimes completed for some merchant IDs and not others, and nobody is tracking which.',
+  },
+  {
+    title: 'Card-present transactions routed as card-not-present',
+    body: 'Usually a point-of-sale configuration error at one site or on one terminal type. It costs materially more per transaction and it is completely invisible unless you look at the data.',
+  },
+  {
+    title: 'Corporate and commercial card mix',
+    body: 'Excluded from the EU interchange caps and several times the cost of a consumer card. If you take corporate bookings or serve trade customers, this is a meaningful share of your cost and worth quantifying rather than assuming.',
+  },
+]
+
+const platforms = [
+  {
+    title: 'Cost per transaction varying by issuing region',
+    body: 'A UK-issued card presented card-not-present carries interchange of 1.15% on debit and 1.50% on credit, against 0.20% and 0.30% for Irish and EEA consumer cards. If your customers take bookings from the UK, your blended cost per transaction moves with a mix you may not be measuring — and if your take rate is uniform, that variance lands entirely on you.',
+  },
+  {
+    title: 'Commercial cards, same problem, different cause',
+    body: 'Outside the interchange caps and several times the cost. In a business-facing vertical they can be a large share of volume.',
+  },
+  {
+    title: 'Cross-border acquiring',
+    body: 'Where your acquirer is licensed relative to where your merchants are established changes the fee structure, sometimes substantially. It is worth knowing whether your current arrangement is the right one for the geography you actually serve, rather than the one you started with.',
+  },
+  {
+    title: 'Blended pricing applied to you',
+    body: 'The same structure that hides interchange from a merchant hides it from a platform. If your payments partner quotes you a single blended rate, you cannot see your own cost of goods sold on payments, which makes it very difficult to price your take rate deliberately.',
+  },
+  {
+    title: 'Take-rate margin you cannot report on',
+    body: 'If you cannot break out what payments actually cost you, you cannot tell your board what the payments line contributes, and you cannot tell whether a pricing change to your own customers would be profitable.',
+  },
+]
+---
+
+<Base
+  title="Who we work with — multi-site operators and payment platforms — Ovlo"
+  description="Card processing cost patterns specific to Irish multi-site retail and hospitality groups, and to software platforms handling payments on behalf of their own customers."
+  path="/who-we-work-with"
+>
+  <!-- ─────────── Hero ─────────── -->
+  <section class="border-b border-ink/10 bg-chalk">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+      <h1 class="max-w-3xl text-4xl leading-[1.1] font-bold text-ink sm:text-5xl">
+        Two kinds of business, two different problems
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-smoke md:text-xl">
+        The cost patterns are not the same, and neither is the reason they matter.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── Multi-site ─────────── -->
+  <section class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20" aria-labelledby="multi-site">
+    <div class="max-w-[68ch]">
+      <h2 id="multi-site" class="text-3xl font-bold text-ink md:text-4xl">
+        Multi-site retail and hospitality
+      </h2>
+      <p class="mt-6 text-lg leading-relaxed">
+        Roughly 10 to 50 sites. Somewhere between €15m and €100m in annual card turnover. Pharmacy
+        groups, restaurant and coffee groups, hotel groups, specialist multi-site retail.
+      </p>
+      <p class="mt-5 text-lg leading-relaxed text-smoke">
+        For you, card processing is an overhead. It is a large one, it is largely invisible because
+        it is netted off settlement rather than invoiced, and it is nobody’s specific
+        responsibility.
+      </p>
+    </div>
+
+    <h3 class="mt-12 text-xl font-semibold text-ink md:text-2xl">
+      What we find in estates like yours
+    </h3>
+    <div class="mt-8 grid gap-x-14 gap-y-9 md:grid-cols-2">
+      {
+        multiSite.map((item) => (
+          <div class="border-t-2 border-copper pt-4">
+            <h4 class="text-lg font-semibold text-ink md:text-xl">{item.title}</h4>
+            <p class="mt-3 text-base leading-relaxed text-smoke md:text-lg">{item.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ─────────── Platforms ─────────── -->
+  <section class="border-y border-ink/10 bg-sand" aria-labelledby="platforms">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+      <div class="max-w-[68ch]">
+        <h2 id="platforms" class="text-3xl font-bold text-ink md:text-4xl">
+          Software platforms handling payments for their customers
+        </h2>
+        <p class="mt-6 text-lg leading-relaxed">
+          Hospitality systems, booking platforms and vertical SaaS that process card payments on
+          behalf of the businesses using them.
+        </p>
+        <p class="mt-5 text-lg leading-relaxed text-smoke">
+          For you this is not an overhead. Processing cost sits inside your take rate, so every
+          basis point comes directly out of your margin on payments. It is a gross margin question,
+          and it compounds with volume in a way an overhead does not.
+        </p>
+      </div>
+
+      <h3 class="mt-12 text-xl font-semibold text-ink md:text-2xl">
+        What we find on platforms like yours
+      </h3>
+      <div class="mt-8 grid gap-x-14 gap-y-9 md:grid-cols-2">
+        {
+          platforms.map((item) => (
+            <div class="border-t-2 border-copper pt-4">
+              <h4 class="text-lg font-semibold text-ink md:text-xl">{item.title}</h4>
+              <p class="mt-3 text-base leading-relaxed text-smoke md:text-lg">{item.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── PSPs ─────────── -->
+  <section class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20" aria-labelledby="psps">
+    <div class="max-w-[68ch]">
+      <h2 id="psps" class="text-3xl font-bold text-ink md:text-4xl">
+        Payment service providers and acquirers
+      </h2>
+      <p class="mt-6 text-lg leading-relaxed text-smoke">
+        We also talk to PSPs and acquirers, generally about longer-term arrangements rather than
+        anything transactional. If that is the conversation you want to have, get in touch directly
+        and we will pick it up by email rather than through the audit process, which is not designed
+        for it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── No logos ─────────── -->
+  <section class="bg-graphite text-chalk" aria-labelledby="no-logos">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+      <div class="max-w-[68ch]">
+        <h2 id="no-logos" class="text-3xl font-bold text-chalk md:text-4xl">
+          On the absence of client logos
+        </h2>
+        <p class="mt-6 text-lg leading-relaxed text-chalk">
+          There are no logos on this site, no case studies and no testimonials.
+        </p>
+        <p class="mt-5 text-lg leading-relaxed text-chalk">
+          Ovlo is new. We have not yet done this work for a named Irish client, and we are not going
+          to borrow credibility we have not earned, or dress up figures from elsewhere as though
+          they were ours. You would find out, and you would be right to.
+        </p>
+        <p class="mt-5 text-lg leading-relaxed text-chalk">
+          What we can offer instead is the audit. Send us your statements and you will see the
+          standard of the work applied to your own numbers, at no cost, before you commit to
+          anything. That is a better test than a logo wall, and it is the one we would rather be
+          judged on.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── CTA ─────────── -->
+  <section class="border-t border-ink/10 bg-sand">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+      <a
+        href="/contact"
+        class="inline-block rounded-sm bg-copper-dark px-8 py-4 text-lg font-semibold text-chalk transition-colors hover:bg-copper-deep"
+      >
+        Send your statements
+      </a>
+      <p class="mt-5 text-base text-smoke">
+        Five working days. No charge. The analysis is yours to keep.
+      </p>
+    </div>
+  </section>
+</Base>

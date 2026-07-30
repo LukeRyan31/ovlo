@@ -1,0 +1,59 @@
+---
+const year = new Date().getFullYear()
+
+const nav = [
+  { href: '/', label: 'Home' },
+  { href: '/how-it-works', label: 'How it works' },
+  { href: '/who-we-work-with', label: 'Who we work with' },
+  { href: '/contact', label: 'Contact' },
+]
+---
+
+<footer class="mt-24 bg-graphite text-chalk">
+  <div class="mx-auto max-w-6xl px-5 py-16 md:px-8">
+    <div class="grid gap-12 md:grid-cols-3">
+      <div>
+        <p class="font-[family-name:var(--font-wordmark)] text-2xl font-extrabold text-chalk">
+          Ovlo
+        </p>
+        <p class="mt-3 max-w-xs text-base leading-relaxed text-fog">
+          Independent card payment cost management. We are paid by our clients, never by an acquirer.
+        </p>
+      </div>
+
+      <nav aria-label="Footer">
+        <h2 class="text-sm font-semibold tracking-widest text-fog uppercase">Pages</h2>
+        <ul class="mt-5 space-y-3">
+          {
+            nav.map(({ href, label }) => (
+              <li>
+                <a href={href} class="inline-block py-1 text-base text-chalk hover:text-copper-light">
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="text-sm font-semibold tracking-widest text-fog uppercase">Get in touch</h2>
+        <p class="mt-5">
+          <a href="mailto:hello@ovlo.ie" class="inline-block py-1 text-base text-copper-light hover:text-chalk">
+            hello@ovlo.ie
+          </a>
+        </p>
+        <p class="mt-3 text-base text-fog">Based in Ireland.</p>
+      </div>
+    </div>
+
+    <div
+      class="mt-14 flex flex-col gap-3 border-t border-chalk/15 pt-8 text-base text-fog sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>&copy; {year} Ovlo.</p>
+      <a href="/privacy" class="inline-block py-1 text-fog underline underline-offset-4 hover:text-chalk">
+        Privacy policy
+      </a>
+    </div>
+  </div>
+</footer>

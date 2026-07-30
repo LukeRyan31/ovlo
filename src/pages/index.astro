@@ -1,0 +1,330 @@
+---
+import Base from '../layouts/Base.astro'
+import EffectiveRateBar from '../components/EffectiveRateBar.astro'
+import ContactForm from '../components/ContactForm.astro'
+
+const problems = [
+  {
+    title: 'Card statements are not built to be read',
+    body: 'A single month can run to dozens of fee lines across several merchant IDs, under names like "service charge" or "non-qualified surcharge" that appear nowhere in your agreement. What you would need in order to check the bill against what you were sold is usually not in it.',
+  },
+  {
+    title: 'Nobody in the business owns this line',
+    body: 'Card processing fees are netted off your settlement before the money reaches your account. There is no invoice, so there is nothing for anyone to approve, and nothing to query. The cost sits between operations and finance and belongs to neither.',
+  },
+  {
+    title: 'Rates drift, because nothing pushes them down',
+    body: 'Your rate was set on the day you signed. Since then the card schemes have changed their fees twice a year, every year, and your provider has passed those changes through. Nothing in the arrangement pushes in the other direction.',
+  },
+  {
+    title: 'You cannot see what is cost and what is margin',
+    body: 'Most Irish merchants are on blended pricing — one rate covering everything. That rate hides interchange, which is the portion paid to the bank that issued your customer’s card and which your provider cannot change. Under a blended rate you cannot tell where the pass-through cost ends and your provider’s margin begins.',
+  },
+]
+
+const deliverables = [
+  {
+    title: 'Your effective rate, in basis points',
+    body: 'Total card processing cost divided by total card turnover. One basis point is one hundredth of a percent. This is the only figure that compares meaningfully across providers, pricing models and time.',
+  },
+  {
+    title: 'That rate split four ways',
+    body: 'Interchange, scheme fees, your acquirer’s margin, and fixed costs. Two of those four are pass-through and cannot be negotiated. Two of them can.',
+  },
+  {
+    title: 'Every fee line named and explained',
+    body: 'Including the ones that appear only as codes, and the ones that appear on some merchant IDs but not others.',
+  },
+  {
+    title: 'What is avoidable, sized in euro per year',
+    body: 'Each item with the reason it is being charged and what would have to change to stop it.',
+  },
+  {
+    title: 'Where your merchant IDs are billed inconsistently',
+    body: 'In a multi-site estate the same fee is often applied differently across sites, and the difference is rarely deliberate.',
+  },
+  {
+    title: 'A summary you can hand to your board',
+    body: 'Written so that your finance director does not need it translated first.',
+  },
+]
+
+const steps = [
+  {
+    n: '1',
+    title: 'Send your statements',
+    body: 'One to three months, covering every merchant ID you hold. PDF or CSV, whatever your provider issues. Do not attach them to the contact form — get in touch first and we will send you secure upload instructions.',
+  },
+  {
+    n: '2',
+    title: 'We analyse them — five working days',
+    body: 'We rebuild your cost from the statement line by line, calculate your effective rate, and separate the pass-through cost from your provider’s margin.',
+  },
+  {
+    n: '3',
+    title: 'You decide',
+    body: 'You get the document and the explanation. If you want to take it from there yourself, that is a legitimate outcome and you owe us nothing.',
+  },
+  {
+    n: '4',
+    title: 'Implementation and ongoing management',
+    body: 'If you go ahead, we implement the changes, lock a baseline with you before anything moves, then report against that baseline every month and track the card scheme fee changes that land twice a year.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'What do you need from me?',
+    a: 'One to three months of card processing statements covering every merchant ID you hold. PDF or CSV, whatever your provider sends. If your merchant services agreement is easy to lay hands on it helps, but it is not required to get started.',
+  },
+  {
+    q: 'Is the audit really free?',
+    a: 'Yes. No charge, no obligation, and the document is yours to keep. We do it this way because reading a statement properly is the only honest demonstration of whether we are any use to you. If you do not go ahead, we do not earn anything from it.',
+  },
+  {
+    q: 'My statements are commercially sensitive.',
+    a: 'They are, and we treat them that way. We do not share them, we do not pass them to any acquirer or provider, and we do not use them as examples. We will not ask you to email them or attach them to a web form — we send secure upload instructions instead. We delete them on request, and by default once the audit is complete unless you ask us to hold them.',
+  },
+  {
+    q: 'How long does it take?',
+    a: 'Five working days from the point we have complete statements. A large estate with many merchant IDs can take longer, and if that is the case we will tell you before we start rather than after.',
+  },
+  {
+    q: 'Do I have to switch provider?',
+    a: 'No. A good deal of what turns up in a statement is fixable where you are — a point-of-sale configuration error, billing for terminals that were decommissioned, a compliance fee you can remove by completing a form. Switching is one option among several and it is often not the first one.',
+  },
+  {
+    q: 'What if I am already well priced?',
+    a: 'Then the audit will say so. A competitive headline rate does not always mean the fixed and admin fees are right, so it is still worth looking, but if there is nothing there worth doing we would rather tell you that than manufacture a project.',
+  },
+  {
+    q: 'How are you paid?',
+    a: 'By you. A one-off setup fee, a monthly retainer scaled to your card volume, and a share of savings we can document. Pricing scales with volume and we will send you the full breakdown on request.',
+  },
+  {
+    q: 'Are you a broker?',
+    a: 'No. A broker earns a commission from the provider they place you with. We take no commission, no referral fee and no revenue share from any acquirer or payment provider, which is why we can tell you to stay where you are when staying where you are is the right answer.',
+  },
+]
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+}
+---
+
+<Base
+  title="Ovlo — Know what you actually pay to accept card payments"
+  description="A free audit of your card processing statements. We show you your true effective rate in basis points, split into interchange, scheme fees, acquirer margin and fixed costs. Independent, Irish, paid by you and never by an acquirer."
+  path="/"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <!-- ─────────── Hero ─────────── -->
+  <section class="border-b border-ink/10 bg-chalk">
+    <div class="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
+      <h1 class="max-w-4xl text-4xl leading-[1.1] font-bold text-ink sm:text-5xl md:text-6xl">
+        Know what you actually pay to accept card payments
+      </h1>
+      <p class="mt-8 max-w-2xl text-lg leading-relaxed text-ink md:text-xl">
+        Send us one to three months of card processing statements. Within five working days you get
+        your true cost in writing, broken down line by line, with every fee explained.
+      </p>
+      <div class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <a
+          href="/contact"
+          class="inline-block rounded-sm bg-copper-dark px-8 py-4 text-center text-lg font-semibold text-chalk transition-colors hover:bg-copper-deep"
+        >
+          Send your statements
+        </a>
+        <a
+          href="/how-it-works"
+          class="inline-block px-2 py-4 text-center text-lg font-semibold text-copper-deep underline underline-offset-4 hover:text-ink"
+        >
+          See how the audit works
+        </a>
+      </div>
+      <p class="mt-6 text-base text-smoke">
+        No charge. No obligation. You keep the analysis whether or not you work with us.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── The problem ─────────── -->
+  <section class="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24" aria-labelledby="problem">
+    <h2 id="problem" class="max-w-3xl text-3xl font-bold text-ink md:text-4xl">
+      Why this cost goes unexamined
+    </h2>
+    <div class="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-2">
+      {
+        problems.map((p) => (
+          <div class="border-t-2 border-copper pt-5">
+            <h3 class="text-xl font-semibold text-ink md:text-2xl">{p.title}</h3>
+            <p class="mt-3 max-w-prose text-base leading-relaxed text-smoke md:text-lg">{p.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ─────────── What the audit gives you ─────────── -->
+  <section class="border-y border-ink/10 bg-sand" aria-labelledby="audit">
+    <div class="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
+      <h2 id="audit" class="max-w-3xl text-3xl font-bold text-ink md:text-4xl">
+        What the free audit gives you
+      </h2>
+      <p class="mt-4 max-w-2xl text-lg text-smoke">
+        A written document, delivered in five working days. Yours to keep either way.
+      </p>
+
+      <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-16">
+        <ul class="space-y-8">
+          {
+            deliverables.map((d) => (
+              <li>
+                <h3 class="text-lg font-semibold text-ink md:text-xl">{d.title}</h3>
+                <p class="mt-2 max-w-prose text-base leading-relaxed text-smoke md:text-lg">
+                  {d.body}
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="lg:sticky lg:top-28 lg:self-start">
+          <EffectiveRateBar />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── How it works ─────────── -->
+  <section class="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24" aria-labelledby="how">
+    <h2 id="how" class="text-3xl font-bold text-ink md:text-4xl">How it works</h2>
+    <ol class="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+      {
+        steps.map((s) => (
+          <li>
+            <span
+              class="flex h-11 w-11 items-center justify-center rounded-full bg-copper-dark text-lg font-bold text-chalk"
+              aria-hidden="true"
+            >
+              {s.n}
+            </span>
+            <h3 class="mt-5 text-lg font-semibold text-ink md:text-xl">{s.title}</h3>
+            <p class="mt-2 text-base leading-relaxed text-smoke md:text-lg">{s.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- ─────────── Who it's for ─────────── -->
+  <section class="border-y border-ink/10 bg-chalk" aria-labelledby="who">
+    <div class="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
+      <h2 id="who" class="text-3xl font-bold text-ink md:text-4xl">Who this is for</h2>
+      <div class="mt-12 grid gap-10 md:grid-cols-2 md:gap-16">
+        <div>
+          <h3 class="text-2xl font-semibold text-ink">Multi-site retail and hospitality</h3>
+          <p class="mt-4 text-base leading-relaxed text-smoke md:text-lg">
+            Roughly 10 to 50 sites and €15m to €100m in annual card turnover. Pharmacy groups,
+            restaurant and coffee groups, hotel groups, specialist retail.
+          </p>
+          <p class="mt-4 text-base leading-relaxed text-smoke md:text-lg">
+            Fixed fees multiply by site. Terminal estates drift out of line with what is being
+            billed. Pre-authorisations that were never cleared generate fees nobody has connected to
+            the front desk.
+          </p>
+          <a href="/who-we-work-with" class="prose-link mt-5 inline-block text-base font-semibold">
+            See the cost patterns we look for
+          </a>
+        </div>
+        <div>
+          <h3 class="text-2xl font-semibold text-ink">
+            Software platforms handling payments for their customers
+          </h3>
+          <p class="mt-4 text-base leading-relaxed text-smoke md:text-lg">
+            Hospitality systems, booking platforms and vertical SaaS that process card payments on
+            behalf of the businesses using them.
+          </p>
+          <p class="mt-4 text-base leading-relaxed text-smoke md:text-lg">
+            Your processing cost sits inside your take rate, so it is a margin question rather than
+            an overhead question. Cost per transaction moves with the issuing region of the card,
+            and cross-border acquiring changes the arithmetic again.
+          </p>
+          <a href="/who-we-work-with" class="prose-link mt-5 inline-block text-base font-semibold">
+            See the cost patterns we look for
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Why independent ─────────── -->
+  <section class="bg-graphite text-chalk" aria-labelledby="independent">
+    <div class="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
+      <div class="max-w-3xl">
+        <h2 id="independent" class="text-3xl font-bold text-chalk md:text-4xl">
+          Why independent matters here
+        </h2>
+        <p class="mt-8 text-lg leading-relaxed text-chalk md:text-xl">
+          Most of the people offering to review your card fees in Ireland are brokers. They are paid
+          a commission by the acquirer they move you to, calculated as a share of what you go on to
+          pay that acquirer. Their incentive is to move you. It is not to lower your cost.
+        </p>
+        <p class="mt-6 text-lg leading-relaxed text-chalk md:text-xl">
+          We are paid by you. Never by an acquirer, a payment provider or a terminal supplier — no
+          commission, no referral fee, no revenue share. Part of what we charge depends on savings
+          we can document against a baseline you agreed before anything changed.
+        </p>
+        <p class="mt-6 text-lg leading-relaxed text-fog">
+          That is the whole distinction, and we will not labour it further.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── FAQ ─────────── -->
+  <section class="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24" aria-labelledby="faq">
+    <h2 id="faq" class="text-3xl font-bold text-ink md:text-4xl">Questions</h2>
+    <div class="mt-10 max-w-3xl divide-y divide-ink/15 border-y border-ink/15">
+      {
+        faqs.map(({ q, a }) => (
+          <details class="group">
+            <summary class="flex cursor-pointer list-none items-start justify-between gap-4 py-5 text-lg font-semibold text-ink hover:text-copper-deep md:text-xl">
+              {q}
+              <span
+                class="mt-1 shrink-0 text-copper-deep transition-transform group-open:rotate-45"
+                aria-hidden="true"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 4v12M4 10h12" />
+                </svg>
+              </span>
+            </summary>
+            <p class="max-w-prose pb-6 text-base leading-relaxed text-smoke md:text-lg">{a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ─────────── Contact ─────────── -->
+  <section class="border-t border-ink/10 bg-sand" aria-labelledby="contact">
+    <div class="mx-auto max-w-3xl px-5 py-20 md:px-8 md:py-24">
+      <h2 id="contact" class="text-3xl font-bold text-ink md:text-4xl">
+        Start with your statements
+      </h2>
+      <p class="mt-4 text-lg leading-relaxed text-smoke">
+        Tell us a little about your estate and we will send secure upload instructions by reply.
+      </p>
+      <div class="mt-10">
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+</Base>

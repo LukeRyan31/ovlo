@@ -1,0 +1,90 @@
+---
+import '../styles/global.css'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+
+interface Props {
+  title: string
+  description: string
+  /** Omit trailing slash. Root is '' */
+  path?: string
+}
+
+const { title, description, path = '' } = Astro.props
+
+/* Astro builds each route to <route>/index.html, so the canonical form carries
+   a trailing slash. The sitemap emits it that way too — if the canonical tag
+   disagrees, Google sees two URLs for one page. */
+const withSlash = path === '/' || path === '' ? '/' : `${path.replace(/\/$/, '')}/`
+const canonical = new URL(withSlash, Astro.site).href
+const ogImage = new URL('/og-image.svg', Astro.site).href
+
+const organisation = {
+  '@context': 'https://schema.org',
+  '@type': ['Organization', 'LocalBusiness'],
+  name: 'Ovlo',
+  url: 'https://ovlo.ie',
+  email: 'hello@ovlo.ie',
+  description:
+    'Independent card payment cost management for Irish multi-site operators and software platforms. Free card processing statement audits.',
+  areaServed: { '@type': 'Country', name: 'Ireland' },
+  address: { '@type': 'PostalAddress', addressCountry: 'IE' },
+  knowsAbout: [
+    'Card processing fees',
+    'Interchange fees',
+    'Merchant services',
+    'Payment scheme fees',
+    'Effective rate analysis',
+  ],
+}
+---
+
+<!doctype html>
+<html lang="en-IE">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#C4763A" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Ovlo" />
+    <meta property="og:locale" content="en_IE" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organisation)} />
+
+    <!-- Per-page structured data and any extra head tags -->
+    <slot name="head" />
+
+    <!-- Privacy-friendly, cookieless analytics. No personal data, no consent banner required. -->
+    <script
+      defer
+      data-domain="ovlo.ie"
+      src="https://plausible.io/js/script.js"></script>
+  </head>
+
+  <body class="flex min-h-screen flex-col">
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,138 @@
+---
+/**
+ * Illustrative breakdown of an effective rate into its four components.
+ *
+ * The figures are a worked example, not client data and not a claim about a
+ * typical merchant. They exist to show the shape of the analysis: which parts
+ * of the rate are pass-through and which are open to negotiation.
+ *
+ * Accessibility: colour is never the only channel. Every segment is named in
+ * the legend below the bar, and the whole figure has a text summary that
+ * screen readers get in place of the graphic.
+ */
+
+/* `ink` is the label colour on the copper segment because chalk on copper is
+   only 3.39:1 and fails AA at this size. Ink on copper is 5.13:1. Every other
+   segment is dark enough to take chalk. */
+const components = [
+  {
+    name: 'Interchange',
+    bps: 42,
+    kind: 'Pass-through',
+    colour: 'var(--color-graphite)',
+    label: 'var(--color-chalk)',
+    note: 'Paid to the bank that issued the card. Your provider collects it and passes it on.',
+  },
+  {
+    name: 'Scheme fees',
+    bps: 18,
+    kind: 'Pass-through',
+    colour: 'var(--color-smoke)',
+    label: 'var(--color-chalk)',
+    note: 'Paid to Visa and Mastercard for running the networks. Revised twice a year.',
+  },
+  {
+    name: 'Acquirer margin',
+    bps: 48,
+    kind: 'Negotiable',
+    colour: 'var(--color-copper)',
+    label: 'var(--color-ink)',
+    note: 'What your provider keeps. The part a blended rate hides most effectively.',
+  },
+  {
+    name: 'Fixed costs',
+    bps: 22,
+    kind: 'Negotiable',
+    colour: 'var(--color-copper-deep)',
+    label: 'var(--color-chalk)',
+    note: 'Terminal rental, gateway, PCI, admin and minimum monthly charges.',
+  },
+]
+
+const total = components.reduce((sum, c) => sum + c.bps, 0)
+const passThrough = components
+  .filter((c) => c.kind === 'Pass-through')
+  .reduce((sum, c) => sum + c.bps, 0)
+const negotiable = total - passThrough
+
+const pct = (bps: number) => (bps / total) * 100
+
+const textSummary = `Illustrative effective rate of ${total} basis points, made up of ${components
+  .map((c) => `${c.name} ${c.bps} basis points (${c.kind.toLowerCase()})`)
+  .join(', ')}. ${passThrough} basis points are pass-through cost and ${negotiable} basis points are open to negotiation.`
+---
+
+<figure class="rounded-lg border border-ink/10 bg-chalk p-6 md:p-8">
+  <figcaption class="mb-6">
+    <h3 class="text-xl font-semibold text-ink md:text-2xl">
+      What an effective rate is actually made of
+    </h3>
+    <p class="mt-2 text-base text-smoke">
+      A worked example at {total} basis points. Illustrative only — not client data.
+    </p>
+  </figcaption>
+
+  <!-- Graphic is hidden from assistive tech; the summary below carries the same content -->
+  <div aria-hidden="true">
+    <!-- Pass-through vs negotiable brackets -->
+    <div class="mb-2 flex text-sm font-semibold tracking-wide text-smoke uppercase">
+      <div style={`width:${pct(passThrough)}%`} class="pr-2">
+        <span class="hidden sm:inline">Pass-through</span>
+        <span class="sm:hidden">Fixed</span>
+      </div>
+      <div style={`width:${pct(negotiable)}%`} class="pr-2 text-copper-deep">Negotiable</div>
+    </div>
+
+    <div class="flex h-14 overflow-hidden rounded-sm md:h-16">
+      {
+        components.map((c, i) => (
+          <div
+            style={`width:${pct(c.bps)}%;background:${c.colour}`}
+            class:list={['flex items-center justify-center', i > 0 && 'border-l-2 border-chalk']}
+          >
+            <span style={`color:${c.label}`} class="text-base font-semibold">
+              {c.bps}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-3 text-base text-smoke">
+      Figures are basis points. One basis point is one hundredth of a percent, so {total} basis points
+      is {(total / 100).toFixed(2)}% of card turnover.
+    </p>
+  </div>
+
+  <p class="sr-only">{textSummary}</p>
+
+  <!-- Legend doubles as the explanation -->
+  <dl class="mt-8 grid gap-5 sm:grid-cols-2">
+    {
+      components.map((c) => (
+        <div class="flex gap-3">
+          <span
+            style={`background:${c.colour}`}
+            class="mt-1.5 h-4 w-4 shrink-0 rounded-xs"
+            aria-hidden="true"
+          />
+          <div>
+            <dt class="text-base font-semibold text-ink">
+              {c.name}
+              <span class="ml-2 font-normal text-smoke">
+                {c.bps} bps · {c.kind.toLowerCase()}
+              </span>
+            </dt>
+            <dd class="mt-1 text-base leading-relaxed text-smoke">{c.note}</dd>
+          </div>
+        </div>
+      ))
+    }
+  </dl>
+
+  <p class="mt-8 border-t border-ink/10 pt-6 text-base leading-relaxed text-ink">
+    Two of the four components are pass-through and cannot be discounted by anyone. Knowing where
+    the pass-through cost ends and your provider's margin begins is the difference between a real
+    conversation and a sales pitch.
+  </p>
+</figure>
