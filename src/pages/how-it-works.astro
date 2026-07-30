@@ -79,7 +79,7 @@ const components = [
   path="/how-it-works"
 >
   <!-- ─────────── Hero ─────────── -->
-  <section class="border-b border-ink/10 bg-chalk">
+  <section class="dotted border-b border-ink/10 bg-chalk">
     <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
       <h1 class="max-w-3xl text-4xl leading-[1.1] font-bold text-ink sm:text-5xl">
         How we read a card processing statement
@@ -136,7 +136,7 @@ const components = [
       <div class="mt-12 space-y-10">
         {
           components.map((c) => (
-            <article class="border-t-2 border-copper pt-5">
+            <article class="card card-accent p-6 md:p-8">
               <h3 class="text-2xl font-semibold text-ink">
                 {c.name}
                 <span class="mt-1 block text-base font-medium text-copper-deep md:mt-0 md:ml-3 md:inline">
@@ -185,10 +185,10 @@ const components = [
         These are the findings that come up repeatedly. Every one is real and every one is checkable
         against your own statement.
       </p>
-      <div class="mt-12 grid gap-x-14 gap-y-10 md:grid-cols-2">
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
         {
           findings.map((f) => (
-            <div>
+            <div class="card card-hover card-accent p-6 md:p-7">
               <h3 class="text-xl font-semibold text-ink">{f.title}</h3>
               <p class="mt-3 text-base leading-relaxed text-smoke md:text-lg">{f.body}</p>
             </div>
@@ -199,7 +199,7 @@ const components = [
   </section>
 
   <!-- ─────────── Baseline ─────────── -->
-  <section class="bg-graphite text-chalk" aria-labelledby="baseline">
+  <section class="dotted-invert bg-graphite text-chalk" aria-labelledby="baseline">
     <div class="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
       <div class="max-w-[68ch]">
         <h2 id="baseline" class="text-3xl font-bold text-chalk md:text-4xl">
