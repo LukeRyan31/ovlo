@@ -6,3 +6,6 @@ dist
 # Business documents — never commit to a public repo
 Blip Payments/
 *.pdf
+
+# Astro generated types
+.astro/
